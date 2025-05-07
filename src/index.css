@@ -88,6 +88,64 @@
   .progress-bar {
     @apply h-full bg-gradient-to-r from-flashcore-green via-flashcore-primary to-flashcore-purple animate-progress-fill;
   }
+
+  /* Wallet-specific styles */
+  .wallet-card {
+    @apply transition-all duration-300;
+  }
+
+  .gradient-binance {
+    @apply bg-gradient-to-br from-yellow-900/40 to-yellow-700/20;
+  }
+
+  .gradient-paypal {
+    @apply bg-gradient-to-br from-blue-900/40 to-blue-700/20;
+  }
+
+  .gradient-zelle {
+    @apply bg-gradient-to-br from-purple-900/40 to-purple-700/20;
+  }
+
+  .gradient-metamask {
+    @apply bg-gradient-to-br from-orange-900/40 to-orange-700/20;
+  }
+
+  .gradient-coinbase {
+    @apply bg-gradient-to-br from-blue-900/40 to-blue-800/20;
+  }
+
+  .gradient-cashapp {
+    @apply bg-gradient-to-br from-green-900/40 to-green-700/20;
+  }
+
+  .gradient-venmo {
+    @apply bg-gradient-to-br from-cyan-900/40 to-blue-700/20;
+  }
+
+  .gradient-applepay {
+    @apply bg-gradient-to-br from-gray-900/40 to-gray-700/20;
+  }
+
+  .gradient-googlepay {
+    @apply bg-gradient-to-br from-blue-900/40 to-red-700/20;
+  }
+  
+  .gradient-trustwallet {
+    @apply bg-gradient-to-br from-blue-900/40 to-blue-700/20;
+  }
+
+  .gradient-blockchain {
+    @apply bg-gradient-to-br from-indigo-900/40 to-blue-700/20;
+  }
+
+  .gradient-skrill {
+    @apply bg-gradient-to-br from-purple-900/40 to-pink-700/20;
+  }
+
+  .skeleton-shine {
+    @apply opacity-0 group-hover:opacity-100;
+    animation: shine 1.5s ease-in-out infinite;
+  }
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -95,5 +153,23 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes shine {
+  from {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  to {
+    transform: translateX(200%) skewX(-15deg);
   }
 }

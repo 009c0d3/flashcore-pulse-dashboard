@@ -1,5 +1,4 @@
-
-import { DashboardData } from "@/types";
+import { DashboardData, Wallet, TagType } from "@/types";
 
 // Mock data for the dashboard
 const mockDashboardData: DashboardData = {
@@ -55,4 +54,152 @@ export const fetchMotivationalQuote = async (): Promise<string> => {
   
   // Return a random quote
   return quotes[Math.floor(Math.random() * quotes.length)];
+};
+
+// Mock wallet data
+const mockWallets: Wallet[] = [
+  {
+    id: 'binance',
+    name: 'Binance',
+    logo: 'https://ui-avatars.com/api/?name=Binance&background=FF9900&color=fff&bold=true',
+    url: '/wallets/binance',
+    gradientClass: 'binance',
+    tags: [
+      { label: 'HOT 🔥', type: TagType.Hot },
+      { label: 'BULK FLASHING', type: TagType.Bulk },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'paypal',
+    name: 'PayPal',
+    logo: 'https://ui-avatars.com/api/?name=PayPal&background=003087&color=fff&bold=true',
+    url: '/wallets/paypal',
+    gradientClass: 'paypal',
+    tags: [
+      { label: 'TRENDING 🚀', type: TagType.Trending },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'zelle',
+    name: 'Zelle',
+    logo: 'https://ui-avatars.com/api/?name=Zelle&background=6D1ED4&color=fff&bold=true',
+    url: '/wallets/zelle',
+    gradientClass: 'zelle',
+    tags: [
+      { label: 'NEW', type: TagType.New },
+      { label: 'AI 🧠', type: TagType.AI },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'metamask',
+    name: 'MetaMask',
+    logo: 'https://ui-avatars.com/api/?name=MetaMask&background=E2761B&color=fff&bold=true',
+    url: '/wallets/metamask',
+    gradientClass: 'metamask',
+    tags: [
+      { label: 'HOT 🔥', type: TagType.Hot },
+    ],
+    status: 'maintenance',
+  },
+  {
+    id: 'coinbase',
+    name: 'Coinbase',
+    logo: 'https://ui-avatars.com/api/?name=Coinbase&background=0052FF&color=fff&bold=true',
+    url: '/wallets/coinbase',
+    gradientClass: 'coinbase',
+    tags: [
+      { label: 'BULK FLASHING', type: TagType.Bulk },
+      { label: 'AI 🧠', type: TagType.AI },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'cashapp',
+    name: 'Cash App',
+    logo: 'https://ui-avatars.com/api/?name=Cash+App&background=00D632&color=fff&bold=true',
+    url: '/wallets/cashapp',
+    gradientClass: 'cashapp',
+    tags: [
+      { label: 'TRENDING 🚀', type: TagType.Trending },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'venmo',
+    name: 'Venmo',
+    logo: 'https://ui-avatars.com/api/?name=Venmo&background=3D95CE&color=fff&bold=true',
+    url: '/wallets/venmo',
+    gradientClass: 'venmo',
+    tags: [
+      { label: 'NEW', type: TagType.New },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'applepay',
+    name: 'Apple Pay',
+    logo: 'https://ui-avatars.com/api/?name=Apple+Pay&background=000000&color=fff&bold=true',
+    url: '/wallets/applepay',
+    gradientClass: 'applepay',
+    tags: [
+      { label: 'HOT 🔥', type: TagType.Hot },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'googlepay',
+    name: 'Google Pay',
+    logo: 'https://ui-avatars.com/api/?name=Google+Pay&background=4285F4&color=fff&bold=true',
+    url: '/wallets/googlepay',
+    gradientClass: 'googlepay',
+    tags: [
+      { label: 'BULK FLASHING', type: TagType.Bulk },
+    ],
+    status: 'disabled',
+  },
+  {
+    id: 'trustwallet',
+    name: 'Trust Wallet',
+    logo: 'https://ui-avatars.com/api/?name=Trust+Wallet&background=3375BB&color=fff&bold=true',
+    url: '/wallets/trustwallet',
+    gradientClass: 'trustwallet',
+    tags: [
+      { label: 'AI 🧠', type: TagType.AI },
+      { label: 'NEW', type: TagType.New },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'blockchain',
+    name: 'Blockchain',
+    logo: 'https://ui-avatars.com/api/?name=Blockchain&background=1D3657&color=fff&bold=true',
+    url: '/wallets/blockchain',
+    gradientClass: 'blockchain',
+    tags: [
+      { label: 'HOT 🔥', type: TagType.Hot },
+      { label: 'TRENDING 🚀', type: TagType.Trending },
+    ],
+    status: 'active',
+  },
+  {
+    id: 'skrill',
+    name: 'Skrill',
+    logo: 'https://ui-avatars.com/api/?name=Skrill&background=7B0041&color=fff&bold=true',
+    url: '/wallets/skrill',
+    gradientClass: 'skrill',
+    tags: [
+      { label: 'BULK FLASHING', type: TagType.Bulk },
+    ],
+    status: 'active',
+  }
+];
+
+// Mock API function to fetch wallets
+export const fetchWallets = async (): Promise<Wallet[]> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 800));
+  return mockWallets;
 };

@@ -57,3 +57,27 @@ export interface ProgressBarProps {
   progress: number;
   height?: string;
 }
+
+// Wallet-related interfaces
+export enum TagType {
+  Hot = 'hot',
+  New = 'new',
+  Trending = 'trending',
+  Bulk = 'bulk',
+  AI = 'ai',
+}
+
+export interface WalletTag {
+  label: string;
+  type: TagType;
+}
+
+export interface Wallet {
+  id: string;
+  name: string;
+  logo: string;
+  url: string;
+  gradientClass: string;
+  tags: WalletTag[];
+  status: 'active' | 'maintenance' | 'disabled';
+}
