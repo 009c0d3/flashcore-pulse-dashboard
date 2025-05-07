@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Wallet, TagType } from "@/types";
@@ -9,7 +8,7 @@ interface WalletCardProps {
 }
 
 const WalletCard: React.FC<WalletCardProps> = ({ wallet }) => {
-  const getTagClass = (type: TagType) => {
+  const getTagClass = (type: string) => {
     switch (type) {
       case TagType.Hot:
         return "bg-gradient-to-r from-red-500 to-red-600";

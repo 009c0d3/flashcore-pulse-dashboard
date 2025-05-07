@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Rocket, HandPointer } from "lucide-react";
+import { Rocket, PointerIcon } from "lucide-react";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import ParticleBackground from "@/components/ParticleBackground";
@@ -42,7 +42,7 @@ const ChildPanel: React.FC = () => {
               <Button 
                 className="mt-6 px-8 py-6 text-lg bg-gradient-to-br from-flashcore-green to-flashcore-purple hover:from-flashcore-green/90 hover:to-flashcore-purple/90"
               >
-                <HandPointer className="mr-2" />
+                <PointerIcon className="mr-2" />
                 Get Started
               </Button>
             </div>

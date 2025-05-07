@@ -1,3 +1,4 @@
+
 export const fetchMotivationalQuote = async (): Promise<string> => {
   // This is a mock function - in a real app, this would call an API
   const quotes = [
@@ -94,4 +95,24 @@ export const fetchWallets = async (): Promise<any[]> => {
   await new Promise(resolve => setTimeout(resolve, 800));
   
   return mockWallets;
+};
+
+export const fetchDashboardData = async (): Promise<any> => {
+  // This is a mock function that would be replaced with a real API call
+  const mockDashboardData = {
+    username: "alex_mitchell",
+    avatar: "/images/avatar.png",
+    rank: "Power User",
+    stats: {
+      salesThisMonth: 12500,
+      salesLastMonth: 10800,
+      totalSales: 45600,
+      activeUsers: 237
+    }
+  };
+  
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 600));
+  
+  return mockDashboardData;
 };

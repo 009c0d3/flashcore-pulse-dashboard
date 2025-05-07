@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Funnel, SadFace } from "lucide-react";
+import { Filter, FrownIcon } from "lucide-react";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import ParticleBackground from "@/components/ParticleBackground";
@@ -32,13 +32,13 @@ const ActivationHistory: React.FC = () => {
                   variant="ghost" 
                   className="text-flashcore-green hover:text-flashcore-green/80 hover:bg-secondary"
                 >
-                  <Funnel size={16} className="mr-2" />
+                  <Filter size={16} className="mr-2" />
                   FILTER
                 </Button>
               </div>
               
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <SadFace size={48} className="text-muted-foreground mb-4" />
+                <FrownIcon size={48} className="text-muted-foreground mb-4" />
                 <p className="text-lg">No activation history to display</p>
                 <p className="text-muted-foreground mt-2">
                   Your activation records will appear here once you've activated any services

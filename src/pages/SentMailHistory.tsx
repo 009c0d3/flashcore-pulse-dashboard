@@ -1,6 +1,6 @@
 
 import React, { useState } from "react";
-import { Funnel, Wallet, CoinStack, Envelope, Clock } from "lucide-react";
+import { Filter, Wallet, Coins, Mail, Clock } from "lucide-react";
 import Header from "@/components/Header";
 import Sidebar from "@/components/Sidebar";
 import ParticleBackground from "@/components/ParticleBackground";
@@ -49,7 +49,7 @@ const SentMailHistory: React.FC = () => {
                   variant="ghost" 
                   className="text-flashcore-green hover:text-flashcore-green/80 hover:bg-secondary"
                 >
-                  <Funnel size={16} className="mr-2" />
+                  <Filter size={16} className="mr-2" />
                   FILTER
                 </Button>
               </div>
@@ -70,7 +70,7 @@ const SentMailHistory: React.FC = () => {
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <CoinStack size={16} className="text-flashcore-orange" />
+                        <Coins size={16} className="text-flashcore-orange" />
                         <div>
                           <p className="text-xs text-muted-foreground">Amount</p>
                           <p>{item.amount}</p>
@@ -78,7 +78,7 @@ const SentMailHistory: React.FC = () => {
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <Envelope size={16} className="text-flashcore-purple" />
+                        <Mail size={16} className="text-flashcore-purple" />
                         <div>
                           <p className="text-xs text-muted-foreground">Email</p>
                           <p className="text-sm overflow-hidden text-ellipsis">{item.email}</p>

@@ -28,7 +28,7 @@ export enum TagType {
 
 export interface WalletTag {
   label: string;
-  type: string;
+  type: TagType;
 }
 
 export interface Wallet {
@@ -59,4 +59,28 @@ export interface MailHistoryItem {
 export interface FeatureRequest {
   description: string;
   imageFile?: File;
+}
+
+export interface DashboardModuleProps {
+  title: string;
+  icon: React.ReactNode;
+  className?: string;
+  children: React.ReactNode;
+}
+
+export interface ProgressBarProps {
+  progress: number;
+  height?: string;
+}
+
+export interface DashboardData {
+  username: string;
+  avatar: string;
+  rank: string;
+  stats: {
+    salesThisMonth: number;
+    salesLastMonth: number;
+    totalSales: number;
+    activeUsers: number;
+  };
 }
