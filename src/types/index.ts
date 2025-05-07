@@ -57,3 +57,19 @@ export interface ProgressBarProps {
   progress: number;
   height?: string;
 }
+
+// Wallet types
+export interface Wallet {
+  id: string;
+  name: string;
+  logo: string;
+  url: string;
+  gradientClass: string;
+  tags: WalletTag[];
+  status?: 'active' | 'maintenance' | 'disabled';
+}
+
+export interface WalletTag {
+  label: string;
+  type: 'hot' | 'new' | 'trending' | 'bulk' | 'ai';
+}
