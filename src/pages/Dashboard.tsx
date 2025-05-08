@@ -1,17 +1,20 @@
 
 import React, { useState, useEffect } from "react";
 import { useUserData } from "@/hooks/useUserData";
-import DashboardModule from "@/components/DashboardModule";
-import ProgressBar from "@/components/ProgressBar";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
+
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import DashboardLoading from "@/components/dashboard/DashboardLoading";
+import DashboardError from "@/components/dashboard/DashboardError";
+import PlanModule from "@/components/dashboard/PlanModule";
+import WalletModule from "@/components/dashboard/WalletModule";
+import StatusModule from "@/components/dashboard/StatusModule";
+import ActivityModule from "@/components/dashboard/ActivityModule";
+import ReferralModule from "@/components/dashboard/ReferralModule";
+
 import SuccessModal from "@/components/SuccessModal";
 import MotivationPopup from "@/components/MotivationPopup";
 import ReferralPopup from "@/components/ReferralPopup";
 import TelegramPopup from "@/components/TelegramPopup";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import { Gem, Wallet, BarChart, Mail, Users, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const Dashboard: React.FC = () => {
   const { data, isLoading, error } = useUserData();
@@ -52,195 +55,28 @@ const Dashboard: React.FC = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center">
-          <div className="w-16 h-16 border-4 border-flashcore-purple border-t-transparent rounded-full animate-spin"></div>
-          <p className="mt-4 text-xl font-semibold">Loading dashboard...</p>
-        </div>
-      </div>
-    );
+    return <DashboardLoading />;
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="p-6 bg-card rounded-xl border border-destructive max-w-md mx-auto text-center">
-          <h2 className="text-2xl font-bold text-destructive mb-2">Error Loading Dashboard</h2>
-          <p className="text-muted-foreground mb-4">Please try refreshing the page</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md"
-          >
-            Refresh
-          </button>
-        </div>
-      </div>
-    );
+    return <DashboardError />;
   }
 
   return (
-    <div className="min-h-screen flex">
-      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+    <DashboardLayout 
+      isSidebarOpen={isSidebarOpen}
+      toggleSidebar={toggleSidebar}
+      openMotivationPopup={() => setShowMotivationPopup(true)}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <PlanModule data={data} />
+        <WalletModule data={data} />
+        <StatusModule data={data} />
+      </div>
       
-      <div className="flex-1">
-        <Header 
-          toggleSidebar={toggleSidebar} 
-          openMotivationPopup={() => setShowMotivationPopup(true)} 
-        />
-        
-        <main className="p-4 md:p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            {/* Plan Module */}
-            <DashboardModule 
-              title="Current Plan" 
-              icon="💎" 
-              className="lg:col-span-1"
-            >
-              <div className="flex flex-col">
-                <div className="flex items-baseline gap-1 mb-2">
-                  <h4 className="text-2xl font-bold gradient-text">{data?.plan?.name}</h4>
-                  <span className="text-muted-foreground">{data?.plan?.amount || "$0"}/mo</span>
-                </div>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Expires on {new Date(data?.plan?.expires || Date.now()).toLocaleDateString()}
-                </p>
-                <Button variant="outline" className="w-full justify-between">
-                  <span>Upgrade Plan</span>
-                  <ExternalLink size={16} />
-                </Button>
-              </div>
-            </DashboardModule>
-            
-            {/* Wallet Module */}
-            <DashboardModule 
-              title="Wallet" 
-              icon="💰" 
-              className="lg:col-span-1"
-            >
-              <div className="flex flex-col">
-                <div className="flex items-baseline gap-1 mb-2">
-                  <h4 className="text-2xl font-bold gradient-text">{data?.walletBalance}</h4>
-                  <span className="text-muted-foreground">Available</span>
-                </div>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Last transaction: May 5, 2025
-                </p>
-                <Button variant="outline" className="w-full justify-between">
-                  <span>Manage Wallet</span>
-                  <ExternalLink size={16} />
-                </Button>
-              </div>
-            </DashboardModule>
-            
-            {/* Status Module */}
-            <DashboardModule 
-              title="Status" 
-              icon="🏆" 
-              className="lg:col-span-1"
-            >
-              <div className="flex flex-col">
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-xl font-semibold">{data?.user?.rank}</h4>
-                  <span className="text-sm text-muted-foreground">{data?.progress}%</span>
-                </div>
-                <ProgressBar progress={data?.progress || 0} />
-                <p className="text-sm text-muted-foreground mt-2">
-                  {data?.mailsNeeded} more mails to reach {data?.nextLevel}
-                </p>
-                <div className="mt-3 py-2 px-3 bg-secondary rounded-lg">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm">Mails Sent</span>
-                    <span className="font-semibold">{data?.user?.mailsSent || 0}</span>
-                  </div>
-                </div>
-              </div>
-            </DashboardModule>
-          </div>
-          
-          {/* Stats and Referral Modules */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            {/* Stats Module */}
-            <DashboardModule 
-              title="Mail Activity" 
-              icon="📈" 
-              className="lg:col-span-2"
-            >
-              <div className="h-64">
-                {data?.mailActivity && (
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={data.mailActivity}>
-                      <XAxis 
-                        dataKey="date" 
-                        tickFormatter={(date) => {
-                          const d = new Date(date);
-                          return `${d.getMonth() + 1}/${d.getDate()}`;
-                        }}
-                      />
-                      <YAxis />
-                      <Tooltip 
-                        contentStyle={{ background: '#1e1e1e', border: '1px solid rgba(255,255,255,0.1)' }} 
-                        formatter={(value) => [`${value} emails`, 'Sent']}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="sent" 
-                        strokeWidth={2}
-                        stroke="#a16bf7" 
-                        activeDot={{ r: 6, fill: '#4cd97b' }} 
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                )}
-              </div>
-              <div className="mt-2 grid grid-cols-3 gap-2">
-                <div className="bg-secondary rounded-lg p-2 text-center">
-                  <p className="text-xs text-muted-foreground mb-1">Total Mails</p>
-                  <p className="font-semibold">{data?.totalMails?.toLocaleString() || 0}</p>
-                </div>
-                <div className="bg-secondary rounded-lg p-2 text-center">
-                  <p className="text-xs text-muted-foreground mb-1">Current Rank</p>
-                  <p className="font-semibold">{data?.user?.rank || "Beginner"}</p>
-                </div>
-                <div className="bg-secondary rounded-lg p-2 text-center">
-                  <p className="text-xs text-muted-foreground mb-1">Progress</p>
-                  <p className="font-semibold">{data?.progress || 0}%</p>
-                </div>
-              </div>
-            </DashboardModule>
-            
-            {/* Referral Module */}
-            <DashboardModule 
-              title="Referrals" 
-              icon="🔗" 
-              className="lg:col-span-1"
-            >
-              <div className="flex flex-col">
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-secondary rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-flashcore-purple">
-                      {data?.user?.referralCount || 0}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Total Referrals</p>
-                  </div>
-                  <div className="bg-secondary rounded-lg p-3 text-center">
-                    <p className="text-2xl font-bold text-flashcore-green">
-                      ${data?.user?.referralEarnings || 0}
-                    </p>
-                    <p className="text-xs text-muted-foreground">Earnings</p>
-                  </div>
-                </div>
-                
-                <Button 
-                  className="w-full bg-gradient-to-r from-flashcore-purple to-flashcore-green hover:opacity-90"
-                  onClick={() => setShowReferralPopup(true)}
-                >
-                  Invite Friends
-                </Button>
-              </div>
-            </DashboardModule>
-          </div>
-        </main>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <ActivityModule data={data} />
+        <ReferralModule data={data} openReferralPopup={() => setShowReferralPopup(true)} />
       </div>
       
       {/* Modals */}
@@ -248,7 +84,7 @@ const Dashboard: React.FC = () => {
       <MotivationPopup isOpen={showMotivationPopup} onClose={() => setShowMotivationPopup(false)} />
       <ReferralPopup isOpen={showReferralPopup} onClose={() => setShowReferralPopup(false)} />
       <TelegramPopup isOpen={showTelegramPopup} onClose={() => setShowTelegramPopup(false)} />
-    </div>
+    </DashboardLayout>
   );
 };
 

@@ -1,4 +1,4 @@
-import { DashboardData, Wallet } from "@/types";
+import { DashboardData, Wallet, TagType } from "@/types";
 
 export const fetchDashboardData = async (): Promise<DashboardData> => {
   // Simulate API delay
@@ -127,4 +127,22 @@ export const fetchWallets = async (): Promise<Wallet[]> => {
       status: "active",
     },
   ];
+};
+
+export const fetchMotivationalQuote = async (): Promise<string> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 500));
+  
+  // Mock motivational quotes
+  const quotes = [
+    "Success is not final, failure is not fatal: It is the courage to continue that counts.",
+    "Believe you can and you're halfway there.",
+    "The only way to do great work is to love what you do.",
+    "Don't watch the clock; do what it does. Keep going.",
+    "The future belongs to those who believe in the beauty of their dreams.",
+    "It always seems impossible until it's done.",
+  ];
+  
+  // Return a random quote
+  return quotes[Math.floor(Math.random() * quotes.length)];
 };
