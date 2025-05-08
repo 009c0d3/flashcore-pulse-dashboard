@@ -134,14 +134,23 @@ export const fetchMotivationalQuote = async (): Promise<string> => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 500));
   
-  // Mock motivational quotes
+  // Futuristic, tech-focused, and motivational quotes
   const quotes = [
-    "Success is not final, failure is not fatal: It is the courage to continue that counts.",
-    "Believe you can and you're halfway there.",
-    "The only way to do great work is to love what you do.",
-    "Don't watch the clock; do what it does. Keep going.",
-    "The future belongs to those who believe in the beauty of their dreams.",
-    "It always seems impossible until it's done.",
+    "Innovation is the edge between imagination and reality.",
+    "The future belongs to those who code it.",
+    "Every breakthrough begins with a single line of code.",
+    "Technology transforms ideas into digital realities.",
+    "Success is the sum of small efforts repeated day after day.",
+    "Embrace the glitch; it leads to innovation.",
+    "Digital dreams become virtual realities.",
+    "The impossible is just code that hasn't been written yet.",
+    "Your mind is the most powerful computer.",
+    "In the matrix of possibilities, you are the architect.",
+    "Quantum thinking creates exponential results.",
+    "Today's innovation is tomorrow's foundation.",
+    "Code your way to the future you envision.",
+    "Break the algorithm of doubt with persistent execution.",
+    "The future is written in binary and determination.",
   ];
   
   // Return a random quote

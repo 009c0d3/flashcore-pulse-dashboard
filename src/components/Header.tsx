@@ -2,6 +2,7 @@
 import React from "react";
 import { Menu, Bell, ChevronDown, Lightbulb } from "lucide-react";
 import { useMotivationQuote } from "@/hooks/useMotivationQuote";
+import ThemeToggle from "./ThemeToggle";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -20,10 +21,16 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, openMotivationPopup }) =
           >
             <Menu size={20} />
           </button>
-          <h1 className="text-xl font-semibold hidden sm:block">Dashboard</h1>
+          <h1 className="text-xl font-semibold hidden sm:block">
+            <span className="bg-gradient-to-r from-flashcore-green to-flashcore-purple bg-clip-text text-transparent">
+              FLASHCORE
+            </span>
+          </h1>
         </div>
         
         <div className="flex items-center gap-2 sm:gap-4">
+          <ThemeToggle />
+          
           <button
             onClick={openMotivationPopup}
             className="p-2 rounded-full hover:bg-secondary relative transition-colors"
@@ -42,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, openMotivationPopup }) =
           </button>
           
           <div className="flex items-center gap-2 ml-2">
-            <div className="w-8 h-8 rounded-full bg-flashcore-purple flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-flashcore-green to-flashcore-purple flex items-center justify-center">
               <span className="text-sm font-medium text-white">AM</span>
             </div>
             <div className="hidden sm:block">
