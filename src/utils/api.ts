@@ -108,7 +108,32 @@ export const fetchDashboardData = async (): Promise<any> => {
       salesLastMonth: 10800,
       totalSales: 45600,
       activeUsers: 237
-    }
+    },
+    // Add the missing properties used in Dashboard.tsx and ReferralPopup.tsx
+    user: {
+      username: "alex_mitchell",
+      avatar: "/images/avatar.png",
+      rank: "Power User",
+      email: "alex@example.com"
+    },
+    plan: {
+      name: "Pro",
+      features: ["Unlimited access", "Priority support", "Custom branding"]
+    },
+    walletBalance: 2750,
+    progress: 65,
+    mailsNeeded: 35,
+    nextLevel: "Expert",
+    mailActivity: [
+      { date: "Mon", count: 12 },
+      { date: "Tue", count: 18 },
+      { date: "Wed", count: 10 },
+      { date: "Thu", count: 15 },
+      { date: "Fri", count: 20 },
+      { date: "Sat", count: 8 },
+      { date: "Sun", count: 5 }
+    ],
+    totalMails: 88
   };
   
   // Simulate API delay

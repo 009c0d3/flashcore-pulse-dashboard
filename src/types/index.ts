@@ -83,4 +83,24 @@ export interface DashboardData {
     totalSales: number;
     activeUsers: number;
   };
+  // Add missing properties used in Dashboard.tsx and ReferralPopup.tsx
+  user?: {
+    username: string;
+    avatar: string;
+    rank: string;
+    email: string;
+  };
+  plan?: {
+    name: string;
+    features: string[];
+  };
+  walletBalance?: number;
+  progress?: number;
+  mailsNeeded?: number;
+  nextLevel?: string;
+  mailActivity?: Array<{
+    date: string;
+    count: number;
+  }>;
+  totalMails?: number;
 }

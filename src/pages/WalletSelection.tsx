@@ -21,13 +21,14 @@ const WalletSelection = () => {
     setIsMotivationPopupOpen(true);
   };
 
-  const { wallets, isLoading, error } = useWalletData();
+  const { wallets = [], isLoading, error } = useWalletData();
 
-  const filteredWallets = wallets.filter(
+  // Add a null check for wallets
+  const filteredWallets = wallets ? wallets.filter(
     (wallet) =>
-      wallet.name.toLowerCase().includes(search.toLowerCase()) ||
-      wallet.tags.some((tag) => tag.label.toLowerCase().includes(search.toLowerCase()))
-  );
+      wallet && wallet.name && wallet.name.toLowerCase().includes(search.toLowerCase()) ||
+      wallet && wallet.tags && wallet.tags.some((tag) => tag.label.toLowerCase().includes(search.toLowerCase()))
+  ) : [];
 
   if (error) {
     toast.error("Failed to load wallets. Please try again.");
@@ -83,7 +84,7 @@ const WalletSelection = () => {
               ))
             ) : filteredWallets.length > 0 ? (
               filteredWallets.map((wallet) => (
-                <WalletCard key={wallet.id} wallet={wallet} />
+                wallet ? <WalletCard key={wallet.id} wallet={wallet} /> : null
               ))
             ) : (
               <div className="col-span-full text-center py-12">

@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Wallet, TagType } from "@/types";
@@ -8,6 +9,11 @@ interface WalletCardProps {
 }
 
 const WalletCard: React.FC<WalletCardProps> = ({ wallet }) => {
+  // Guard clause to prevent rendering if wallet is undefined
+  if (!wallet) {
+    return null;
+  }
+
   const getTagClass = (type: string) => {
     switch (type) {
       case TagType.Hot:
