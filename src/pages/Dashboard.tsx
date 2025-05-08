@@ -99,11 +99,11 @@ const Dashboard: React.FC = () => {
             >
               <div className="flex flex-col">
                 <div className="flex items-baseline gap-1 mb-2">
-                  <h4 className="text-2xl font-bold gradient-text">{data?.plan.name}</h4>
-                  <span className="text-muted-foreground">{data?.plan.amount}/mo</span>
+                  <h4 className="text-2xl font-bold gradient-text">{data?.plan?.name}</h4>
+                  <span className="text-muted-foreground">{data?.plan?.amount || "$0"}/mo</span>
                 </div>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Expires on {new Date(data?.plan.expires || "").toLocaleDateString()}
+                  Expires on {new Date(data?.plan?.expires || Date.now()).toLocaleDateString()}
                 </p>
                 <Button variant="outline" className="w-full justify-between">
                   <span>Upgrade Plan</span>
@@ -141,7 +141,7 @@ const Dashboard: React.FC = () => {
             >
               <div className="flex flex-col">
                 <div className="flex items-center justify-between mb-2">
-                  <h4 className="text-xl font-semibold">{data?.user.rank}</h4>
+                  <h4 className="text-xl font-semibold">{data?.user?.rank}</h4>
                   <span className="text-sm text-muted-foreground">{data?.progress}%</span>
                 </div>
                 <ProgressBar progress={data?.progress || 0} />
@@ -151,7 +151,7 @@ const Dashboard: React.FC = () => {
                 <div className="mt-3 py-2 px-3 bg-secondary rounded-lg">
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Mails Sent</span>
-                    <span className="font-semibold">{data?.user.mailsSent}</span>
+                    <span className="font-semibold">{data?.user?.mailsSent || 0}</span>
                   </div>
                 </div>
               </div>
@@ -185,8 +185,8 @@ const Dashboard: React.FC = () => {
                       <Line 
                         type="monotone" 
                         dataKey="sent" 
-                        stroke="#a16bf7" 
                         strokeWidth={2}
+                        stroke="#a16bf7" 
                         activeDot={{ r: 6, fill: '#4cd97b' }} 
                       />
                     </LineChart>
@@ -196,15 +196,15 @@ const Dashboard: React.FC = () => {
               <div className="mt-2 grid grid-cols-3 gap-2">
                 <div className="bg-secondary rounded-lg p-2 text-center">
                   <p className="text-xs text-muted-foreground mb-1">Total Mails</p>
-                  <p className="font-semibold">{data?.totalMails.toLocaleString()}</p>
+                  <p className="font-semibold">{data?.totalMails?.toLocaleString() || 0}</p>
                 </div>
                 <div className="bg-secondary rounded-lg p-2 text-center">
                   <p className="text-xs text-muted-foreground mb-1">Current Rank</p>
-                  <p className="font-semibold">{data?.user.rank}</p>
+                  <p className="font-semibold">{data?.user?.rank || "Beginner"}</p>
                 </div>
                 <div className="bg-secondary rounded-lg p-2 text-center">
                   <p className="text-xs text-muted-foreground mb-1">Progress</p>
-                  <p className="font-semibold">{data?.progress}%</p>
+                  <p className="font-semibold">{data?.progress || 0}%</p>
                 </div>
               </div>
             </DashboardModule>
@@ -219,13 +219,13 @@ const Dashboard: React.FC = () => {
                 <div className="grid grid-cols-2 gap-4 mb-4">
                   <div className="bg-secondary rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-flashcore-purple">
-                      {data?.user.referralCount || 0}
+                      {data?.user?.referralCount || 0}
                     </p>
                     <p className="text-xs text-muted-foreground">Total Referrals</p>
                   </div>
                   <div className="bg-secondary rounded-lg p-3 text-center">
                     <p className="text-2xl font-bold text-flashcore-green">
-                      ${data?.user.referralEarnings || 0}
+                      ${data?.user?.referralEarnings || 0}
                     </p>
                     <p className="text-xs text-muted-foreground">Earnings</p>
                   </div>

@@ -1,4 +1,3 @@
-
 export interface SidebarLink {
   label: string;
   icon: string;
@@ -46,6 +45,10 @@ export interface User {
   avatar: string;
   rank: string;
   email: string;
+  referralLink?: string;
+  referralCount?: number;
+  referralEarnings?: number;
+  mailsSent?: number;
 }
 
 export interface MailHistoryItem {
@@ -83,16 +86,21 @@ export interface DashboardData {
     totalSales: number;
     activeUsers: number;
   };
-  // Add missing properties used in Dashboard.tsx and ReferralPopup.tsx
   user?: {
     username: string;
     avatar: string;
     rank: string;
     email: string;
+    referralLink?: string;
+    referralCount?: number;
+    referralEarnings?: number;
+    mailsSent?: number;
   };
   plan?: {
     name: string;
     features: string[];
+    amount?: string;
+    expires?: string;
   };
   walletBalance?: number;
   progress?: number;
