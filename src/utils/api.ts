@@ -1,3 +1,4 @@
+
 import { DashboardData, Wallet, TagType } from "@/types";
 
 export const fetchDashboardData = async (): Promise<DashboardData> => {
@@ -62,8 +63,8 @@ export const fetchWallets = async (): Promise<Wallet[]> => {
       url: "https://metamask.io/",
       gradientClass: "purple-blue",
       tags: [
-        { label: "Hot", type: "hot" },
-        { label: "New", type: "new" },
+        { label: "Hot", type: TagType.Hot },
+        { label: "New", type: TagType.New },
       ],
       status: "active",
     },
@@ -74,8 +75,8 @@ export const fetchWallets = async (): Promise<Wallet[]> => {
       url: "https://www.coinbase.com/wallet",
       gradientClass: "blue-green",
       tags: [
-        { label: "Trending", type: "trending" },
-        { label: "Bulk", type: "bulk" },
+        { label: "Trending", type: TagType.Trending },
+        { label: "Bulk", type: TagType.Bulk },
       ],
       status: "maintenance",
     },
@@ -86,7 +87,7 @@ export const fetchWallets = async (): Promise<Wallet[]> => {
       url: "https://trustwallet.com/",
       gradientClass: "green-purple",
       tags: [
-        { label: "AI", type: "ai" },
+        { label: "AI", type: TagType.AI },
       ],
       status: "disabled",
     },
@@ -97,8 +98,8 @@ export const fetchWallets = async (): Promise<Wallet[]> => {
       url: "https://phantom.app/",
       gradientClass: "orange-red",
       tags: [
-        { label: "Hot", type: "hot" },
-        { label: "AI", type: "ai" },
+        { label: "Hot", type: TagType.Hot },
+        { label: "AI", type: TagType.AI },
       ],
       status: "active",
     },
@@ -109,8 +110,8 @@ export const fetchWallets = async (): Promise<Wallet[]> => {
       url: "https://rainbow.me/",
       gradientClass: "purple-orange",
       tags: [
-        { label: "New", type: "new" },
-        { label: "Trending", type: "trending" },
+        { label: "New", type: TagType.New },
+        { label: "Trending", type: TagType.Trending },
       ],
       status: "active",
     },
@@ -121,8 +122,8 @@ export const fetchWallets = async (): Promise<Wallet[]> => {
       url: "https://www.argent.xyz/",
       gradientClass: "blue-purple",
       tags: [
-        { label: "Bulk", type: "bulk" },
-        { label: "AI", type: "ai" },
+        { label: "Bulk", type: TagType.Bulk },
+        { label: "AI", type: TagType.AI },
       ],
       status: "active",
     },
