@@ -102,38 +102,36 @@ const AdminDashboard = () => {
     try {
       setLoadingUsers(true);
       
-      // Get profiles with roles
-      const { data: profiles, error } = await supabase
+      // First, get all user profiles
+      const { data: profiles, error: profileError } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          user_roles (*)
-        `);
+        .select('*');
         
-      if (error) throw error;
+      if (profileError) throw profileError;
+
+      // Then, get all user roles separately
+      const { data: userRoles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('*');
+        
+      if (rolesError) throw rolesError;
       
       // Get emails from auth.users (need to use edge function for this in production)
-      const { data: users, error: usersError } = await supabase.auth.admin.listUsers();
+      const { data: authUsers, error: usersError } = await supabase.auth.admin.listUsers();
       
-      if (usersError) {
-        // Fallback if admin API is not available
-        const enrichedProfiles = profiles.map(profile => ({
-          ...profile,
-          email: "Email hidden", // Emails not available without admin access
-          isAdmin: profile.user_roles?.some(role => role.role === 'admin') || false
-        }));
+      // Combine all the data
+      const enrichedProfiles: UserWithRole[] = profiles.map(profile => {
+        // Find roles for this user
+        const roles = userRoles.filter(role => role.user_id === profile.id);
         
-        setUsers(enrichedProfiles);
-        return;
-      }
-      
-      // Combine data
-      const enrichedProfiles = profiles.map(profile => {
-        const authUser = users.users.find(u => u.id === profile.id);
+        // Find auth user data
+        const authUser = authUsers?.users?.find(u => u.id === profile.id);
+        
         return {
           ...profile,
-          email: authUser?.email || "Unknown",
-          isAdmin: profile.user_roles?.some(role => role.role === 'admin') || false
+          user_roles: roles || [],
+          email: authUser?.email || "Email hidden",
+          isAdmin: roles?.some(role => role.role === 'admin') || false
         };
       });
       
