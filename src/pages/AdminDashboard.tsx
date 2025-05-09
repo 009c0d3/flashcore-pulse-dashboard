@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
@@ -27,7 +26,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -43,15 +41,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { 
-  Check, 
-  ChevronDown, 
   MoreHorizontal, 
   Pencil, 
   Shield, 
   ShieldOff, 
-  Trash2, 
-  UserPlus, 
-  X 
+  Trash2
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -122,16 +116,16 @@ const AdminDashboard = () => {
       // Combine all the data
       const enrichedProfiles: UserWithRole[] = profiles.map(profile => {
         // Find roles for this user
-        const roles = userRoles.filter(role => role.user_id === profile.id);
+        const roles = userRoles?.filter(role => role.user_id === profile.id) || [];
         
         // Find auth user data
         const authUser = authUsers?.users?.find(u => u.id === profile.id);
         
         return {
           ...profile,
-          user_roles: roles || [],
+          user_roles: roles,
           email: authUser?.email || "Email hidden",
-          isAdmin: roles?.some(role => role.role === 'admin') || false
+          isAdmin: roles.some(role => role.role === 'admin') || false
         };
       });
       
