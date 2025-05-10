@@ -109,7 +109,7 @@ const AdminDashboard = () => {
       // Combine all the data
       const enrichedProfiles: UserWithRole[] = profiles.map(profile => {
         // Find roles for this user
-        const roles = userRoles?.filter(role => role.user_id === profile.id) || [];
+        const roles = userRoles ? userRoles.filter(role => role.user_id === profile.id) : [];
         
         // Find auth user data
         const authUser = authUsers?.users?.find(u => u.id === profile.id);
