@@ -51,23 +51,25 @@ const AdminDashboard = () => {
       
       if (authError) throw authError;
       
-      // Combine all the data
-      const enrichedProfiles: UserWithRole[] = profiles?.map(profile => {
-        // Find roles for this user - ensure proper type checking
-        const roles = userRoles 
-          ? userRoles.filter(role => role.user_id === profile.id) 
-          : [];
-        
-        // Find auth user data
-        const authUser = authUsers?.users?.find(u => u.id === profile.id);
-        
-        return {
-          ...profile,
-          user_roles: roles,
-          email: authUser?.email || "Email hidden",
-          isAdmin: roles.some(role => role.role === 'admin') || false
-        };
-      }) || [];
+      // Combine all the data - ensure we handle the case where profiles is null or undefined
+      const enrichedProfiles: UserWithRole[] = profiles && profiles.length > 0 
+        ? profiles.map(profile => {
+            // Find roles for this user - ensure proper type checking
+            const roles = userRoles 
+              ? userRoles.filter(role => role.user_id === profile.id) 
+              : [];
+            
+            // Find auth user data
+            const authUser = authUsers?.users?.find(u => u.id === profile.id);
+            
+            return {
+              ...profile,
+              user_roles: roles,
+              email: authUser?.email || "Email hidden",
+              isAdmin: roles.some(role => role.role === 'admin') || false
+            };
+          })
+        : [];
       
       setUsers(enrichedProfiles);
     } catch (error) {
