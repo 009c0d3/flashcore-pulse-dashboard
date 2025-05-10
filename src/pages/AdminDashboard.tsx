@@ -1,27 +1,27 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { UserProfile, UserRole } from "@/types/auth";
-import Header from "@/components/Header";
-import Sidebar from "@/components/Sidebar";
-import ParticleBackground from "@/components/ParticleBackground";
+import { toast } from "sonner";
 import { 
   Table, 
   TableBody, 
+  TableCaption, 
   TableCell, 
   TableHead, 
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
+import { 
   Dialog,
   DialogContent,
   DialogHeader,
@@ -36,7 +36,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -49,69 +49,62 @@ import {
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+import { UserProfile, UserRole } from "@/types/auth";
+
 interface UserWithRole extends UserProfile {
-  user_roles: UserRole[];
   email: string;
   isAdmin: boolean;
+  user_roles: UserRole[];
 }
 
+const updateFormSchema = z.object({
+  username: z.string().min(3, { message: "Username must be at least 3 characters long" }),
+  full_name: z.string().min(3, { message: "Full name must be at least 3 characters long" }),
+});
+
 const AdminDashboard = () => {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [users, setUsers] = useState<UserWithRole[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(true);
-  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<UserWithRole | null>(null);
-  
-  const updateUserSchema = z.object({
-    username: z.string().min(3, "Username must be at least 3 characters"),
-    full_name: z.string().optional(),
-  });
-  
-  type UpdateUserFormData = z.infer<typeof updateUserSchema>;
-  
-  const updateForm = useForm<UpdateUserFormData>({
-    resolver: zodResolver(updateUserSchema),
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadingUserAction, setLoadingUserAction] = useState<{id: string, action: string} | null>(null);
+
+  const updateForm = useForm<z.infer<typeof updateFormSchema>>({
+    resolver: zodResolver(updateFormSchema),
     defaultValues: {
       username: "",
       full_name: "",
-    }
+    },
   });
-
-  // Redirect if not admin
+  
   useEffect(() => {
-    if (!loading && (!user || !user.isAdmin)) {
-      toast({
-        title: "Access Denied",
-        description: "You need admin permissions to access this page.",
-        variant: "destructive"
-      });
-      navigate('/');
-    }
-  }, [user, loading, navigate]);
-
-  // Fetch all users with their roles
+    fetchUsers();
+  }, []);
+  
   const fetchUsers = async () => {
+    setIsLoading(true);
+    
     try {
-      setLoadingUsers(true);
-      
-      // First, get all user profiles
-      const { data: profiles, error: profileError } = await supabase
+      // Fetch user profiles
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*');
-        
-      if (profileError) throw profileError;
-
-      // Then, get all user roles separately
+      
+      if (profilesError) throw profilesError;
+      
+      // Fetch roles
       const { data: userRoles, error: rolesError } = await supabase
         .from('user_roles')
         .select('*');
-        
+      
       if (rolesError) throw rolesError;
       
-      // Get emails from auth.users (need to use edge function for this in production)
-      const { data: authUsers, error: usersError } = await supabase.auth.admin.listUsers();
+      // Fetch auth users (requires admin privileges)
+      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+      
+      if (authError) throw authError;
       
       // Combine all the data
       const enrichedProfiles: UserWithRole[] = profiles.map(profile => {
@@ -132,266 +125,213 @@ const AdminDashboard = () => {
       setUsers(enrichedProfiles);
     } catch (error) {
       console.error("Error fetching users:", error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch users. Please try again.",
-        variant: "destructive"
-      });
+      toast.error("Could not load users. Please try again.");
     } finally {
-      setLoadingUsers(false);
+      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (user?.isAdmin) {
-      fetchUsers();
-    }
-  }, [user]);
+  const handleEditUser = (user: UserWithRole) => {
+    setSelectedUser(user);
+    updateForm.reset({
+      username: user.username || "",
+      full_name: user.full_name || "",
+    });
+    setIsEditDialogOpen(true);
+  };
 
-  // Delete user
-  const handleDeleteUser = async (userId: string) => {
+  const handleUpdateUser = async (values: z.infer<typeof updateFormSchema>) => {
+    if (!selectedUser) return;
+    
+    setLoadingUserAction({ id: selectedUser.id, action: "update" });
+    
     try {
-      // In a real app, you'd want to use an edge function for this
-      const { error } = await supabase.auth.admin.deleteUser(userId);
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          username: values.username,
+          full_name: values.full_name,
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', selectedUser.id);
       
       if (error) throw error;
       
-      setUsers(users.filter(u => u.id !== userId));
-      
-      toast({
-        title: "Success",
-        description: "User has been deleted successfully.",
-      });
-    } catch (error: any) {
-      console.error("Error deleting user:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to delete user. Please try again.",
-        variant: "destructive"
-      });
+      toast.success("User updated successfully");
+      fetchUsers();
+      setIsEditDialogOpen(false);
+    } catch (error) {
+      console.error("Error updating user:", error);
+      toast.error("Failed to update user. Please try again.");
+    } finally {
+      setLoadingUserAction(null);
     }
   };
 
-  // Update user role (make admin or remove admin)
-  const handleToggleAdminRole = async (userId: string, isAdmin: boolean) => {
+  const toggleAdminRole = async (userId: string, makeAdmin: boolean) => {
+    setLoadingUserAction({ id: userId, action: makeAdmin ? "promote" : "demote" });
+    
     try {
-      if (isAdmin) {
+      if (makeAdmin) {
+        // Add admin role
+        const { error } = await supabase
+          .from('user_roles')
+          .insert([{ 
+            user_id: userId, 
+            role: 'admin',
+            created_at: new Date().toISOString(),
+          }]);
+        
+        if (error) throw error;
+        toast.success("User promoted to admin");
+      } else {
         // Remove admin role
         const { error } = await supabase
           .from('user_roles')
           .delete()
           .eq('user_id', userId)
           .eq('role', 'admin');
-          
+        
         if (error) throw error;
-      } else {
-        // Add admin role
-        const { error } = await supabase
-          .from('user_roles')
-          .insert({ user_id: userId, role: 'admin' });
-          
-        if (error) throw error;
+        toast.success("Admin privileges revoked");
       }
       
-      // Update local state
-      setUsers(users.map(u => {
-        if (u.id === userId) {
-          return { ...u, isAdmin: !isAdmin };
-        }
-        return u;
-      }));
-      
-      toast({
-        title: "Success",
-        description: `User ${isAdmin ? 'removed from' : 'added to'} admin role.`,
-      });
-    } catch (error: any) {
-      console.error("Error updating user role:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update user role. Please try again.",
-        variant: "destructive"
-      });
+      fetchUsers();
+    } catch (error) {
+      console.error("Error toggling admin role:", error);
+      toast.error(`Failed to ${makeAdmin ? 'promote' : 'demote'} user. Please try again.`);
+    } finally {
+      setLoadingUserAction(null);
     }
   };
 
-  // Update user profile
-  const handleUpdateUser = async (data: UpdateUserFormData) => {
-    if (!selectedUser) return;
+  const deleteUser = async (userId: string) => {
+    if (!confirm("Are you sure you want to delete this user? This action cannot be undone.")) {
+      return;
+    }
+    
+    setLoadingUserAction({ id: userId, action: "delete" });
     
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({
-          username: data.username,
-          full_name: data.full_name,
-        })
-        .eq('id', selectedUser.id);
-        
+      // Delete from auth (this will cascade to profiles due to foreign key)
+      const { error } = await supabase.auth.admin.deleteUser(userId);
+      
       if (error) throw error;
       
-      // Update local state
-      setUsers(users.map(u => {
-        if (u.id === selectedUser.id) {
-          return { 
-            ...u, 
-            username: data.username,
-            full_name: data.full_name || u.full_name 
-          };
-        }
-        return u;
-      }));
-      
-      toast({
-        title: "Success",
-        description: "User profile has been updated.",
-      });
-      
-      setIsUpdateDialogOpen(false);
-    } catch (error: any) {
-      console.error("Error updating user:", error);
-      toast({
-        title: "Error",
-        description: error.message || "Failed to update user. Please try again.",
-        variant: "destructive"
-      });
+      toast.success("User deleted successfully");
+      fetchUsers();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      toast.error("Failed to delete user. Please try again.");
+    } finally {
+      setLoadingUserAction(null);
     }
   };
 
-  // Open update dialog with user data
-  const openUpdateDialog = (user: UserWithRole) => {
-    setSelectedUser(user);
-    updateForm.reset({
-      username: user.username || "",
-      full_name: user.full_name || "",
-    });
-    setIsUpdateDialogOpen(true);
-  };
-
-  if (loading || !user?.isAdmin) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="loader">Loading...</div>
-      </div>
-    );
+  if (!user?.isAdmin) {
+    navigate("/");
+    return null;
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
-      <ParticleBackground />
-      <Sidebar isOpen={false} onClose={() => {}} />
-      
-      <div className="flex flex-col flex-1">
-        <Header 
-          toggleSidebar={() => {}} 
-          openMotivationPopup={() => {}}
-        />
-        
-        <main className="flex-1 p-4 md:p-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-2xl font-bold flex items-center">
-                <Shield className="mr-2" /> Admin Dashboard
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-semibold">User Management</h2>
-                <Button onClick={() => fetchUsers()} variant="outline" size="sm">
-                  Refresh
-                </Button>
-              </div>
-              
-              <div className="rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Username</TableHead>
-                      <TableHead>Email</TableHead>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {loadingUsers ? (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center py-6">
-                          Loading users...
-                        </TableCell>
-                      </TableRow>
-                    ) : users.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={5} className="text-center py-6">
-                          No users found.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      users.map((user) => (
-                        <TableRow key={user.id}>
-                          <TableCell className="font-medium">{user.username}</TableCell>
-                          <TableCell>{user.email}</TableCell>
-                          <TableCell>{user.full_name || '-'}</TableCell>
-                          <TableCell>
-                            <span className={`px-2 py-1 rounded text-xs font-medium ${
-                              user.isAdmin ? 'bg-flashcore-purple/20 text-flashcore-purple' : 'bg-muted text-muted-foreground'
-                            }`}>
-                              {user.isAdmin ? 'Admin' : 'User'}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                  <MoreHorizontal size={16} />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuItem onClick={() => openUpdateDialog(user)}>
-                                  <Pencil size={14} className="mr-2" /> Edit
-                                </DropdownMenuItem>
-                                <DropdownMenuItem 
-                                  onClick={() => handleToggleAdminRole(user.id, user.isAdmin)}
-                                  disabled={user.id === user?.id} // Prevent removing admin from self
-                                >
-                                  {user.isAdmin ? (
-                                    <>
-                                      <ShieldOff size={14} className="mr-2" /> Remove Admin
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Shield size={14} className="mr-2" /> Make Admin
-                                    </>
-                                  )}
-                                </DropdownMenuItem>
-                                <DropdownMenuItem 
-                                  onClick={() => handleDeleteUser(user.id)}
-                                  disabled={user.id === user?.id} // Prevent deleting self
-                                  className="text-destructive focus:text-destructive"
-                                >
-                                  <Trash2 size={14} className="mr-2" /> Delete
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            </CardContent>
-          </Card>
-        </main>
-      </div>
-      
-      {/* Update User Dialog */}
-      <Dialog open={isUpdateDialogOpen} onOpenChange={setIsUpdateDialogOpen}>
+    <div className="container mx-auto p-4 md:p-8">
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle>Admin Dashboard</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <h2 className="text-xl font-semibold mb-4">User Management</h2>
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center p-8">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <Table>
+              <TableCaption>List of all users</TableCaption>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Username</TableHead>
+                  <TableHead>Full Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {users.map((user) => (
+                  <TableRow key={user.id}>
+                    <TableCell>{user.username || "Not set"}</TableCell>
+                    <TableCell>{user.full_name || "Not set"}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <div className="flex items-center">
+                        {user.isAdmin ? (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">
+                            Admin
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300">
+                            User
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="sm">
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleEditUser(user)}>
+                            <Pencil className="mr-2 h-4 w-4" />
+                            Edit
+                          </DropdownMenuItem>
+                          {user.isAdmin ? (
+                            <DropdownMenuItem 
+                              onClick={() => toggleAdminRole(user.id, false)}
+                              disabled={loadingUserAction?.id === user.id}
+                            >
+                              <ShieldOff className="mr-2 h-4 w-4" />
+                              Remove Admin Role
+                            </DropdownMenuItem>
+                          ) : (
+                            <DropdownMenuItem 
+                              onClick={() => toggleAdminRole(user.id, true)}
+                              disabled={loadingUserAction?.id === user.id}
+                            >
+                              <Shield className="mr-2 h-4 w-4" />
+                              Make Admin
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem 
+                            onClick={() => deleteUser(user.id)}
+                            disabled={loadingUserAction?.id === user.id}
+                            className="text-red-600 focus:text-red-600"
+                          >
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit User</DialogTitle>
           </DialogHeader>
-          
           <Form {...updateForm}>
             <form onSubmit={updateForm.handleSubmit(handleUpdateUser)} className="space-y-4">
               <FormField
@@ -407,7 +347,6 @@ const AdminDashboard = () => {
                   </FormItem>
                 )}
               />
-              
               <FormField
                 control={updateForm.control}
                 name="full_name"
@@ -415,22 +354,27 @@ const AdminDashboard = () => {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input {...field} value={field.value || ''} />
+                      <Input {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              
-              <div className="flex justify-end space-x-2">
+              <div className="flex justify-end gap-2">
                 <Button 
                   type="button" 
                   variant="outline" 
-                  onClick={() => setIsUpdateDialogOpen(false)}
+                  onClick={() => setIsEditDialogOpen(false)}
                 >
                   Cancel
                 </Button>
-                <Button type="submit">Save Changes</Button>
+                <Button 
+                  type="submit" 
+                  disabled={loadingUserAction?.id === selectedUser?.id}
+                >
+                  {loadingUserAction?.id === selectedUser?.id ? 
+                    "Saving..." : "Save Changes"}
+                </Button>
               </div>
             </form>
           </Form>
