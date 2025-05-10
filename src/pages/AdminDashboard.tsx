@@ -4,31 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { 
-  Table, 
-  TableBody, 
-  TableCaption, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
-} from "@/components/ui/table";
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { 
-  MoreHorizontal, 
-  Pencil, 
-  Shield, 
-  ShieldOff, 
-  Trash2
-} from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { UserProfile, UserRole } from "@/types/auth";
 import UserEditDialog from "@/components/admin/UserEditDialog";
@@ -77,7 +52,7 @@ const AdminDashboard = () => {
       if (authError) throw authError;
       
       // Combine all the data
-      const enrichedProfiles: UserWithRole[] = profiles.map(profile => {
+      const enrichedProfiles: UserWithRole[] = profiles?.map(profile => {
         // Find roles for this user - ensure proper type checking
         const roles = userRoles 
           ? userRoles.filter(role => role.user_id === profile.id) 
@@ -92,7 +67,7 @@ const AdminDashboard = () => {
           email: authUser?.email || "Email hidden",
           isAdmin: roles.some(role => role.role === 'admin') || false
         };
-      });
+      }) || [];
       
       setUsers(enrichedProfiles);
     } catch (error) {
