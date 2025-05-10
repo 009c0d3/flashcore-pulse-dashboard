@@ -1,15 +1,20 @@
 
 import React, { useState, useEffect } from "react";
 import { Moon, Sun } from "lucide-react";
+import { Toggle } from "@/components/ui/toggle";
 
 const ThemeToggle: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
+  // Handle initial theme setup
   useEffect(() => {
+    setIsMounted(true);
     // Check if user has previously set a theme preference
     const storedTheme = localStorage.getItem("theme");
     if (storedTheme) {
       setIsDarkMode(storedTheme === "dark");
+      document.documentElement.classList.toggle("light-mode", storedTheme === "light");
     }
   }, []);
 
@@ -18,14 +23,18 @@ const ThemeToggle: React.FC = () => {
     setIsDarkMode(!isDarkMode);
     localStorage.setItem("theme", newTheme);
     
-    // This is a placeholder for actual theme switching
-    // In a real implementation, you would update CSS variables or use a theme context
+    // Actually toggle the theme class on the document
+    document.documentElement.classList.toggle("light-mode", newTheme === "light");
+    
     console.log(`Theme switched to ${newTheme}`);
   };
 
+  if (!isMounted) return null; // Prevent flash of incorrect theme
+
   return (
-    <button
-      onClick={toggleTheme}
+    <Toggle
+      pressed={!isDarkMode}
+      onPressedChange={() => toggleTheme()}
       className="p-2 rounded-full hover:bg-secondary relative transition-colors"
       aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
     >
@@ -43,8 +52,8 @@ const ThemeToggle: React.FC = () => {
           }`} 
         />
       </div>
-      <span className="absolute -top-1 -right-1 w-2 h-2 bg-flashcore-green rounded-full animate-ping"></span>
-    </button>
+      <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full animate-ping ${isDarkMode ? "bg-flashcore-green" : "bg-flashcore-orange"}`}></span>
+    </Toggle>
   );
 };
 
