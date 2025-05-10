@@ -8,13 +8,9 @@ import ParticleBackground from "@/components/ParticleBackground";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import MotivationPopup from "@/components/MotivationPopup";
-import { useAuth } from "@/context/AuthContext";
-import { SignupData } from "@/types/auth";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const walletLogos = [
   { name: "Binance", icon: "💰" },
@@ -24,27 +20,13 @@ const walletLogos = [
   { name: "Zelle", icon: "💵" },
 ];
 
-const signupSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
-  confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
-}).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords do not match",
-  path: ["confirmPassword"],
-});
-
-type SignupFormData = z.infer<typeof signupSchema>;
-
 const Registration: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [motivationOpen, setMotivationOpen] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
-  const { signup, loading, error } = useAuth();
   
-  const form = useForm<SignupFormData>({
-    resolver: zodResolver(signupSchema),
+  const form = useForm({
     defaultValues: {
       username: "",
       email: "",
@@ -53,14 +35,9 @@ const Registration: React.FC = () => {
     }
   });
   
-  const onSubmit = async (data: SignupFormData) => {
-    const signupData: SignupData = {
-      email: data.email,
-      password: data.password,
-      username: data.username,
-    };
-    
-    await signup(signupData);
+  const onSubmit = (data: any) => {
+    console.log("Form submitted:", data);
+    // Handle registration logic here
   };
 
   return (
@@ -96,12 +73,6 @@ const Registration: React.FC = () => {
                 </p>
               </div>
               
-              {error && (
-                <div className="bg-destructive/10 text-destructive rounded-md p-3 mb-4">
-                  {error}
-                </div>
-              )}
-              
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                   <FormField
@@ -120,7 +91,6 @@ const Registration: React.FC = () => {
                           </FormControl>
                           <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                         </div>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -142,7 +112,6 @@ const Registration: React.FC = () => {
                           </FormControl>
                           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
                         </div>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -171,7 +140,6 @@ const Registration: React.FC = () => {
                             {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                           </button>
                         </div>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -200,7 +168,6 @@ const Registration: React.FC = () => {
                             {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                           </button>
                         </div>
-                        <FormMessage />
                       </FormItem>
                     )}
                   />
@@ -208,9 +175,8 @@ const Registration: React.FC = () => {
                   <Button 
                     type="submit" 
                     className="w-full bg-gradient-to-r from-flashcore-green to-flashcore-purple hover:from-flashcore-green/90 hover:to-flashcore-purple/90"
-                    disabled={loading}
                   >
-                    {loading ? "Registering..." : "Register"}
+                    Register
                   </Button>
                 </form>
               </Form>
