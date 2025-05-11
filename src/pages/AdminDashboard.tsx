@@ -53,9 +53,9 @@ const AdminDashboard = () => {
       
       // Combine all the data - ensure we handle the case where profiles is null or undefined
       const enrichedProfiles: UserWithRole[] = (profiles && profiles.length > 0) 
-        ? profiles.map(profile => {
+        ? profiles.map((profile: UserProfile) => {
             // Find roles for this user - ensure proper type checking
-            const roles = userRoles 
+            const roles = Array.isArray(userRoles) 
               ? userRoles.filter(role => role.user_id === profile.id) 
               : [];
             
