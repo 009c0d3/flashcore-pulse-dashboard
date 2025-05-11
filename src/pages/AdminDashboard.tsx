@@ -52,7 +52,7 @@ const AdminDashboard = () => {
       if (authError) throw authError;
       
       // Combine all the data - ensure we handle the case where profiles is null or undefined
-      const enrichedProfiles: UserWithRole[] = profiles && profiles.length > 0 
+      const enrichedProfiles: UserWithRole[] = (profiles && profiles.length > 0) 
         ? profiles.map(profile => {
             // Find roles for this user - ensure proper type checking
             const roles = userRoles 
