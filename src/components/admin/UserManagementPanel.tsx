@@ -53,7 +53,7 @@ const UserManagementPanel: React.FC = () => {
           isOpen={isEditDialogOpen}
           onOpenChange={setIsEditDialogOpen}
           user={selectedUser}
-          isLoading={loadingUserAction?.id === selectedUser.id}
+          isLoading={loadingUserAction !== null && loadingUserAction.id === selectedUser.id}
           onSubmit={handleUpdateUser}
         />
       )}

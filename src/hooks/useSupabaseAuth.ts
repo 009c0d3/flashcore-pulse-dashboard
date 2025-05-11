@@ -88,6 +88,39 @@ export const useSupabaseAuth = () => {
     });
   };
 
+  // Send password reset email
+  const sendPasswordResetEmail = async (email: string) => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    if (error) throw error;
+  };
+
+  // Reset password with new password
+  const resetPassword = async (newPassword: string) => {
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) throw error;
+  };
+
+  // Send email verification
+  const sendVerificationEmail = async (email: string) => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+    });
+    if (error) throw error;
+  };
+
+  // Verify email with token
+  const verifyEmail = async (token: string) => {
+    // The token is automatically handled by Supabase when the user clicks the verification link
+    // We can check if the session is verified
+    const { data, error } = await supabase.auth.getSession();
+    if (error) throw error;
+    
+    return data.session?.user.email_confirmed_at !== null;
+  };
+
   return {
     fetchUserData,
     login,
@@ -95,5 +128,9 @@ export const useSupabaseAuth = () => {
     logout,
     getSession,
     onAuthStateChange,
+    sendPasswordResetEmail,
+    resetPassword,
+    sendVerificationEmail,
+    verifyEmail
   };
 };

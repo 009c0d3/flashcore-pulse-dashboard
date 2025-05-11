@@ -17,6 +17,9 @@ interface AuthContextType extends AuthState {
   signup: (data: SignupData) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+  sendPasswordReset: (email: string) => Promise<void>;
+  resetPassword: (newPassword: string) => Promise<void>;
+  sendVerification: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -144,6 +147,58 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setAuthState({ user, loading: false, error: null });
   };
 
+  // Send password reset email
+  const sendPasswordReset = async (email: string) => {
+    try {
+      await authService.sendPasswordResetEmail(email);
+      toast({
+        title: "Password reset email sent",
+        description: "Please check your email to reset your password.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Password reset failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Reset password
+  const resetPassword = async (newPassword: string) => {
+    try {
+      await authService.resetPassword(newPassword);
+      toast({
+        title: "Password reset successful",
+        description: "Your password has been updated.",
+      });
+      navigate('/login');
+    } catch (error: any) {
+      toast({
+        title: "Password reset failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Send verification email
+  const sendVerification = async (email: string) => {
+    try {
+      await authService.sendVerificationEmail(email);
+      toast({
+        title: "Verification email sent",
+        description: "Please check your email to verify your account.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Email verification failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
   return (
     <AuthContext.Provider 
       value={{ 
@@ -151,7 +206,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login, 
         signup, 
         logout,
-        refreshUser
+        refreshUser,
+        sendPasswordReset,
+        resetPassword,
+        sendVerification
       }}
     >
       {children}

@@ -1,19 +1,19 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthUser, UserProfile } from "@/types/auth";
+import { AuthUser, UserProfile, UserRole } from "@/types/auth";
 import { useToast } from "@/hooks/use-toast";
 
-interface User extends UserProfile {
+export interface UserWithRole extends UserProfile {
   email: string;
   isAdmin: boolean;
-  user_roles: { role: string }[];
+  user_roles: UserRole[];
 }
 
 export const useUserManagement = () => {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<UserWithRole[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingUserAction, setLoadingUserAction] = useState<string | null>(null);
+  const [loadingUserAction, setLoadingUserAction] = useState<{id: string, action: string} | null>(null);
   const { toast } = useToast();
 
   // Fetch all users and their profiles
@@ -43,18 +43,21 @@ export const useUserManagement = () => {
       
       // Combine user data
       const combinedUsers = authUsers.map(authUser => {
-        const profile = profiles.find(p => p.id === authUser.id) || null;
+        const profile = profiles.find(p => p.id === authUser.id) || {
+          id: authUser.id,
+          username: null,
+          full_name: null,
+          avatar_url: null,
+          created_at: authUser.created_at,
+          updated_at: authUser.updated_at
+        };
+        
         const roles = userRoles ? userRoles.filter(r => r.user_id === authUser.id) : [];
         const isAdmin = roles.some(role => role.role === 'admin');
         
         return {
-          id: authUser.id,
+          ...profile,
           email: authUser.email || '',
-          username: profile?.username,
-          full_name: profile?.full_name,
-          avatar_url: profile?.avatar_url,
-          created_at: profile?.created_at || authUser.created_at,
-          updated_at: profile?.updated_at || authUser.updated_at,
           isAdmin,
           user_roles: roles,
         };
@@ -76,7 +79,7 @@ export const useUserManagement = () => {
   // Update user profile
   const updateUser = async (userId: string, userData: Partial<UserProfile>) => {
     try {
-      setLoadingUserAction(userId);
+      setLoadingUserAction({id: userId, action: 'update'});
       
       const { error } = await supabase
         .from("profiles")
@@ -108,7 +111,7 @@ export const useUserManagement = () => {
   // Toggle admin role
   const toggleAdminRole = async (userId: string, makeAdmin: boolean) => {
     try {
-      setLoadingUserAction(userId);
+      setLoadingUserAction({id: userId, action: 'toggleAdmin'});
       
       if (makeAdmin) {
         // Add admin role
@@ -156,7 +159,7 @@ export const useUserManagement = () => {
   // Delete user
   const deleteUser = async (userId: string) => {
     try {
-      setLoadingUserAction(userId);
+      setLoadingUserAction({id: userId, action: 'delete'});
       
       // Delete user from auth
       const { error } = await supabase.auth.admin.deleteUser(userId);
