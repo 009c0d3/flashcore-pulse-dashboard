@@ -47,7 +47,7 @@ export const useUserManagement = () => {
               : [];
             
             // Find auth user data
-            const authUser = authUsers?.users?.find(u => u.id === profile.id);
+            const authUser = authUsers?.users && authUsers.users.find(u => u.id === profile.id);
             
             return {
               ...profile,
