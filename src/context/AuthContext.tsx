@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthState, AuthUser, LoginCredentials, SignupData } from '@/types/auth';
-import { supabase } from '@/integrations/supabase/client';
+import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
@@ -25,54 +25,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>(initialState);
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  // Fetch user profile and roles
-  const fetchUserData = async (userId: string): Promise<AuthUser | null> => {
-    try {
-      // Fetch user profile
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single();
-
-      if (profileError) throw profileError;
-
-      // Fetch user roles
-      const { data: roles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('*')
-        .eq('user_id', userId);
-
-      if (rolesError) throw rolesError;
-
-      // Get user email
-      const { data: userData } = await supabase.auth.getUser();
-      
-      if (!userData?.user) return null;
-
-      // Check if user has admin role
-      const isAdmin = roles.some(role => role.role === 'admin');
-
-      return {
-        id: userId,
-        email: userData.user.email || '',
-        profile,
-        roles,
-        isAdmin,
-      };
-    } catch (error) {
-      console.error('Error fetching user data:', error);
-      return null;
-    }
-  };
+  const authService = useSupabaseAuth();
 
   // Handle session changes
   const handleSessionChange = async (session: Session | null) => {
     setAuthState(prev => ({ ...prev, loading: true }));
     
     if (session?.user) {
-      const user = await fetchUserData(session.user.id);
+      const user = await authService.fetchUserData(session.user.id);
       setAuthState({ user, loading: false, error: null });
     } else {
       setAuthState({ user: null, loading: false, error: null });
@@ -82,19 +42,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Initialize auth state and listen for changes
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        console.log('Auth state changed:', event);
-        
-        // Handle the session change asynchronously to avoid auth deadlocks
-        setTimeout(() => {
-          handleSessionChange(session);
-        }, 0);
-      }
-    );
+    const { data: { subscription } } = authService.onAuthStateChange((session) => {
+      console.log('Auth state changed');
+      
+      // Handle the session change asynchronously to avoid auth deadlocks
+      setTimeout(() => {
+        handleSessionChange(session);
+      }, 0);
+    });
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    authService.getSession().then(({ data: { session } }) => {
       handleSessionChange(session);
     });
 
@@ -103,26 +61,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  // Login function
+  // Login function with error handling
   const login = async (credentials: LoginCredentials) => {
     try {
       setAuthState(prev => ({ ...prev, loading: true, error: null }));
       
-      const { error } = await supabase.auth.signInWithPassword(credentials);
-      
-      if (error) {
-        setAuthState(prev => ({ 
-          ...prev, 
-          loading: false, 
-          error: error.message 
-        }));
-        toast({
-          title: "Login failed",
-          description: error.message,
-          variant: "destructive"
-        });
-        return;
-      }
+      await authService.login(credentials);
       
       navigate('/');
       toast({
@@ -143,38 +87,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Signup function
+  // Signup function with error handling
   const signup = async (data: SignupData) => {
     try {
       setAuthState(prev => ({ ...prev, loading: true, error: null }));
       
-      const { email, password, username, full_name, avatar_url } = data;
-      
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            username,
-            full_name,
-            avatar_url,
-          }
-        }
-      });
-      
-      if (error) {
-        setAuthState(prev => ({ 
-          ...prev, 
-          loading: false, 
-          error: error.message 
-        }));
-        toast({
-          title: "Signup failed",
-          description: error.message,
-          variant: "destructive"
-        });
-        return;
-      }
+      await authService.signup(data);
       
       toast({
         title: "Signup successful",
@@ -195,26 +113,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Logout function
+  // Logout function with error handling
   const logout = async () => {
     try {
       setAuthState(prev => ({ ...prev, loading: true }));
       
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        setAuthState(prev => ({ 
-          ...prev, 
-          loading: false, 
-          error: error.message 
-        }));
-        toast({
-          title: "Logout failed",
-          description: error.message,
-          variant: "destructive"
-        });
-        return;
-      }
+      await authService.logout();
       
       setAuthState({ user: null, loading: false, error: null });
       navigate('/login');
@@ -236,7 +140,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!authState.user?.id) return;
     
     setAuthState(prev => ({ ...prev, loading: true }));
-    const user = await fetchUserData(authState.user.id);
+    const user = await authService.fetchUserData(authState.user.id);
     setAuthState({ user, loading: false, error: null });
   };
 
