@@ -14,11 +14,6 @@ import { useAuth } from "@/context/AuthContext";
 import { LoginCredentials } from "@/types/auth";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Dialog,
-  DialogContent,
-} from "@/components/ui/dialog";
-import EmailVerification from "@/components/auth/EmailVerification";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -28,7 +23,6 @@ const loginSchema = z.object({
 const Login: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const [showVerification, setShowVerification] = useState<boolean>(false);
   const { login, loading, error } = useAuth();
   
   const form = useForm<LoginCredentials>({
@@ -132,25 +126,10 @@ const Login: React.FC = () => {
                   </Button>
                 </form>
               </Form>
-
-              <div className="mt-4 text-center">
-                <button 
-                  onClick={() => setShowVerification(true)}
-                  className="text-sm text-flashcore-green hover:underline"
-                >
-                  Need to verify your email?
-                </button>
-              </div>
             </CardContent>
           </Card>
         </main>
       </div>
-
-      <Dialog open={showVerification} onOpenChange={setShowVerification}>
-        <DialogContent className="max-w-md p-0">
-          <EmailVerification onClose={() => setShowVerification(false)} />
-        </DialogContent>
-      </Dialog>
     </div>
   );
 };

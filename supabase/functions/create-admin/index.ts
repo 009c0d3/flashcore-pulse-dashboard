@@ -24,19 +24,9 @@ serve(async (req) => {
     }
     
     // Create a Supabase client with the user's JWT
-    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
-    const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
-    
-    if (!supabaseUrl || !supabaseAnonKey) {
-      return new Response(
-        JSON.stringify({ error: 'Missing Supabase configuration' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-    
     const supabase = createClient(
-      supabaseUrl,
-      supabaseAnonKey,
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
       {
         global: {
           headers: {
@@ -57,9 +47,9 @@ serve(async (req) => {
     }
     
     // Check if this is the first user in the system
-    const { count, error: countError } = await supabase
+    const { data: usersCount, error: countError } = await supabase
       .from('profiles')
-      .select('*', { count: 'exact', head: true });
+      .select('id', { count: 'exact', head: true });
       
     if (countError) {
       return new Response(
@@ -68,24 +58,7 @@ serve(async (req) => {
       );
     }
     
-    // Only allow creating an admin if:
-    // 1. This is the first user in the system, or
-    // 2. The calling user is already an admin
-    if (count !== 1) {
-      const { data: isAdmin, error: roleCheckError } = await supabase.rpc(
-        'user_has_role',
-        { user_id: user.id, role: 'admin' }
-      );
-      
-      if (roleCheckError || !isAdmin) {
-        return new Response(
-          JSON.stringify({ error: 'Only existing admins can create new admins' }),
-          { status: 403, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-    }
-    
-    // Create an admin user
+    // Create an admin user for the first user in the system
     const { data, error } = await supabase.rpc('create_initial_admin', {
       admin_email: user.email
     });
@@ -106,7 +79,7 @@ serve(async (req) => {
     );
   } catch (error) {
     return new Response(
-      JSON.stringify({ error: error.message || 'Unknown error occurred' }),
+      JSON.stringify({ error: error.message }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

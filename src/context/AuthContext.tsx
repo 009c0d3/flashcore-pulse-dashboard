@@ -1,7 +1,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { AuthState, AuthUser, LoginCredentials, SignupData } from '@/types/auth';
-import { useSupabaseAuth } from '@/hooks/useSupabaseAuth';
+import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Session } from '@supabase/supabase-js';
@@ -17,9 +17,6 @@ interface AuthContextType extends AuthState {
   signup: (data: SignupData) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
-  sendPasswordReset: (email: string) => Promise<void>;
-  resetPassword: (newPassword: string) => Promise<void>;
-  sendVerification: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -28,14 +25,54 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [authState, setAuthState] = useState<AuthState>(initialState);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const authService = useSupabaseAuth();
+
+  // Fetch user profile and roles
+  const fetchUserData = async (userId: string): Promise<AuthUser | null> => {
+    try {
+      // Fetch user profile
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+
+      if (profileError) throw profileError;
+
+      // Fetch user roles
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('*')
+        .eq('user_id', userId);
+
+      if (rolesError) throw rolesError;
+
+      // Get user email
+      const { data: userData } = await supabase.auth.getUser();
+      
+      if (!userData?.user) return null;
+
+      // Check if user has admin role
+      const isAdmin = roles.some(role => role.role === 'admin');
+
+      return {
+        id: userId,
+        email: userData.user.email || '',
+        profile,
+        roles,
+        isAdmin,
+      };
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+      return null;
+    }
+  };
 
   // Handle session changes
   const handleSessionChange = async (session: Session | null) => {
     setAuthState(prev => ({ ...prev, loading: true }));
     
     if (session?.user) {
-      const user = await authService.fetchUserData(session.user.id);
+      const user = await fetchUserData(session.user.id);
       setAuthState({ user, loading: false, error: null });
     } else {
       setAuthState({ user: null, loading: false, error: null });
@@ -45,17 +82,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   // Initialize auth state and listen for changes
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = authService.onAuthStateChange((session) => {
-      console.log('Auth state changed');
-      
-      // Handle the session change asynchronously to avoid auth deadlocks
-      setTimeout(() => {
-        handleSessionChange(session);
-      }, 0);
-    });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        console.log('Auth state changed:', event);
+        
+        // Handle the session change asynchronously to avoid auth deadlocks
+        setTimeout(() => {
+          handleSessionChange(session);
+        }, 0);
+      }
+    );
 
     // THEN check for existing session
-    authService.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
       handleSessionChange(session);
     });
 
@@ -64,12 +103,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
   }, []);
 
-  // Login function with error handling
+  // Login function
   const login = async (credentials: LoginCredentials) => {
     try {
       setAuthState(prev => ({ ...prev, loading: true, error: null }));
       
-      await authService.login(credentials);
+      const { error } = await supabase.auth.signInWithPassword(credentials);
+      
+      if (error) {
+        setAuthState(prev => ({ 
+          ...prev, 
+          loading: false, 
+          error: error.message 
+        }));
+        toast({
+          title: "Login failed",
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
       
       navigate('/');
       toast({
@@ -90,12 +143,38 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Signup function with error handling
+  // Signup function
   const signup = async (data: SignupData) => {
     try {
       setAuthState(prev => ({ ...prev, loading: true, error: null }));
       
-      await authService.signup(data);
+      const { email, password, username, full_name, avatar_url } = data;
+      
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username,
+            full_name,
+            avatar_url,
+          }
+        }
+      });
+      
+      if (error) {
+        setAuthState(prev => ({ 
+          ...prev, 
+          loading: false, 
+          error: error.message 
+        }));
+        toast({
+          title: "Signup failed",
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
       
       toast({
         title: "Signup successful",
@@ -116,12 +195,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   };
 
-  // Logout function with error handling
+  // Logout function
   const logout = async () => {
     try {
       setAuthState(prev => ({ ...prev, loading: true }));
       
-      await authService.logout();
+      const { error } = await supabase.auth.signOut();
+      
+      if (error) {
+        setAuthState(prev => ({ 
+          ...prev, 
+          loading: false, 
+          error: error.message 
+        }));
+        toast({
+          title: "Logout failed",
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
       
       setAuthState({ user: null, loading: false, error: null });
       navigate('/login');
@@ -143,60 +236,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     if (!authState.user?.id) return;
     
     setAuthState(prev => ({ ...prev, loading: true }));
-    const user = await authService.fetchUserData(authState.user.id);
+    const user = await fetchUserData(authState.user.id);
     setAuthState({ user, loading: false, error: null });
-  };
-
-  // Send password reset email
-  const sendPasswordReset = async (email: string) => {
-    try {
-      await authService.sendPasswordResetEmail(email);
-      toast({
-        title: "Password reset email sent",
-        description: "Please check your email to reset your password.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Password reset failed",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  // Reset password
-  const resetPassword = async (newPassword: string) => {
-    try {
-      await authService.resetPassword(newPassword);
-      toast({
-        title: "Password reset successful",
-        description: "Your password has been updated.",
-      });
-      navigate('/login');
-    } catch (error: any) {
-      toast({
-        title: "Password reset failed",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  // Send verification email
-  const sendVerification = async (email: string) => {
-    try {
-      await authService.sendVerificationEmail(email);
-      toast({
-        title: "Verification email sent",
-        description: "Please check your email to verify your account.",
-      });
-    } catch (error: any) {
-      toast({
-        title: "Email verification failed",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
   };
 
   return (
@@ -206,10 +247,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         login, 
         signup, 
         logout,
-        refreshUser,
-        sendPasswordReset,
-        resetPassword,
-        sendVerification
+        refreshUser
       }}
     >
       {children}
