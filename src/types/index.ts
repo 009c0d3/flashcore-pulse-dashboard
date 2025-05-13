@@ -1,114 +1,59 @@
-export interface SidebarLink {
-  label: string;
-  icon: string;
-  path: string;
-  isNew?: boolean;
-  subLinks?: Array<{
-    label: string;
-    icon: string;
-    path: string;
-  }>;
-}
-
-export interface ModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  title?: string;
-  children: React.ReactNode;
-}
-
-export enum TagType {
-  Hot = 'hot',
-  New = 'new',
-  Trending = 'trending',
-  Bulk = 'bulk',
-  AI = 'ai'
-}
-
-export interface WalletTag {
-  label: string;
-  type: TagType;
-}
-
-export interface Wallet {
-  id: string;
-  name: string;
-  logo: string;
-  url: string;
-  gradientClass: string;
-  tags: WalletTag[];
-  status: 'active' | 'maintenance' | 'disabled';
-}
 
 export interface User {
   username: string;
   avatar: string;
   rank: string;
-  email: string;
-  referralLink?: string;
-  referralCount?: number;
-  referralEarnings?: number;
-  mailsSent?: number;
+  mailsSent: number;
+  referralCount: number;
+  referralEarnings: number;
+  referralLink: string;
 }
 
-export interface MailHistoryItem {
-  id: number;
-  walletName: string;
+export interface Plan {
+  name: string;
   amount: string;
-  email: string;
-  sentAt: string;
+  expires: string;
 }
 
-export interface FeatureRequest {
-  description: string;
-  imageFile?: File;
+export interface DashboardData {
+  user: User;
+  plan: Plan;
+  progress: number;
+  nextLevel: string;
+  mailsNeeded: number;
+  walletBalance: string;
+  totalMails: number;
+  mailActivity: MailActivity[];
+}
+
+export interface MailActivity {
+  date: string;
+  sent: number;
+}
+
+export interface SidebarLink {
+  label: string;
+  icon: string;
+  path: string;
+  isNew?: boolean;
+  subLinks?: SidebarLink[];
 }
 
 export interface DashboardModuleProps {
   title: string;
-  icon: React.ReactNode;
+  icon: string;
   className?: string;
   children: React.ReactNode;
+}
+
+export interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+  title?: string;
 }
 
 export interface ProgressBarProps {
   progress: number;
   height?: string;
-}
-
-export interface DashboardData {
-  username: string;
-  avatar: string;
-  rank: string;
-  stats: {
-    salesThisMonth: number;
-    salesLastMonth: number;
-    totalSales: number;
-    activeUsers: number;
-  };
-  user?: {
-    username: string;
-    avatar: string;
-    rank: string;
-    email: string;
-    referralLink?: string;
-    referralCount?: number;
-    referralEarnings?: number;
-    mailsSent?: number;
-  };
-  plan?: {
-    name: string;
-    features: string[];
-    amount?: string;
-    expires?: string;
-  };
-  walletBalance?: number;
-  progress?: number;
-  mailsNeeded?: number;
-  nextLevel?: string;
-  mailActivity?: Array<{
-    date: string;
-    count: number;
-  }>;
-  totalMails?: number;
 }

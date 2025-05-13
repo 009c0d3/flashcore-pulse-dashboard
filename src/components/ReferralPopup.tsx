@@ -15,7 +15,7 @@ const ReferralPopup: React.FC<ReferralPopupProps> = ({ isOpen, onClose }) => {
   const { toast } = useToast();
   const [copied, setCopied] = useState(false);
   
-  const referralLink = data?.user?.referralLink || "https://flashcore.app/ref/user";
+  const referralLink = data?.user.referralLink || "https://flashcore.app/ref/user";
   
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
@@ -58,11 +58,11 @@ const ReferralPopup: React.FC<ReferralPopupProps> = ({ isOpen, onClose }) => {
         
         <div className="grid grid-cols-2 gap-4 w-full mb-6">
           <div className="bg-secondary rounded-lg p-3 text-center">
-            <p className="text-2xl font-bold text-flashcore-purple">{data?.user?.referralCount || 0}</p>
+            <p className="text-2xl font-bold text-flashcore-purple">{data?.user.referralCount || 0}</p>
             <p className="text-xs text-muted-foreground">Friends Invited</p>
           </div>
           <div className="bg-secondary rounded-lg p-3 text-center">
-            <p className="text-2xl font-bold text-flashcore-green">${data?.user?.referralEarnings || 0}</p>
+            <p className="text-2xl font-bold text-flashcore-green">${data?.user.referralEarnings || 0}</p>
             <p className="text-xs text-muted-foreground">Total Earned</p>
           </div>
         </div>
