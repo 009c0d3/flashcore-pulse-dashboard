@@ -1,7 +1,6 @@
 
 import React from "react";
 import { Menu, Bell, ChevronDown, Lightbulb } from "lucide-react";
-import { useMotivationQuote } from "@/hooks/useMotivationQuote";
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -15,7 +14,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, openMotivationPopup }) =
         <div className="flex items-center gap-4">
           <button 
             onClick={toggleSidebar} 
-            className="p-2 rounded-md hover:bg-secondary transition-colors lg:hidden"
+            className="p-2 rounded-md hover:bg-secondary transition-colors"
             aria-label="Toggle sidebar"
           >
             <Menu size={20} />
