@@ -1,27 +1,29 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const isMobile = useIsMobile();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
+  
+  // Update sidebar state when screen size changes
+  useEffect(() => {
+    setIsSidebarOpen(!isMobile);
+  }, [isMobile]);
   
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
   
-  const [showMotivationPopup, setShowMotivationPopup] = useState(false);
-  
   const openMotivationPopup = () => {
-    setShowMotivationPopup(true);
-  };
-  
-  const closeMotivationPopup = () => {
-    setShowMotivationPopup(false);
+    // You can implement the motivation popup here if needed
+    console.log("Open motivation popup");
   };
 
   return (
@@ -34,7 +36,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           openMotivationPopup={openMotivationPopup}
         />
         
-        <main className="flex-1 overflow-auto p-4">
+        <main className="flex-1 overflow-auto p-4 pt-16">
           {children}
         </main>
       </div>

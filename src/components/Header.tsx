@@ -9,7 +9,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ toggleSidebar, openMotivationPopup }) => {
   return (
-    <header className="h-16 bg-card/50 backdrop-blur-sm border-b border-border sticky top-0 z-30">
+    <header className="h-16 bg-card/50 backdrop-blur-sm border-b border-border fixed top-0 z-30 w-full">
       <div className="flex items-center justify-between px-4 h-full">
         <div className="flex items-center gap-4">
           <button 
