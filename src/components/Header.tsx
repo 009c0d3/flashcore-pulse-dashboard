@@ -1,5 +1,6 @@
 
 import React from "react";
+import { Link } from "react-router-dom";
 import { Menu, Bell, ChevronDown, Lightbulb } from "lucide-react";
 
 interface HeaderProps {
@@ -40,7 +41,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, openMotivationPopup }) =
             <span className="absolute -top-1 -right-1 w-3 h-3 bg-flashcore-green rounded-full"></span>
           </button>
           
-          <div className="flex items-center gap-2 ml-2">
+          <Link to="/login" className="flex items-center gap-2 ml-2">
             <div className="w-8 h-8 rounded-full bg-flashcore-purple flex items-center justify-center">
               <span className="text-sm font-medium text-white">AM</span>
             </div>
@@ -48,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ toggleSidebar, openMotivationPopup }) =
               <p className="text-sm font-medium">alex_mitchell</p>
             </div>
             <ChevronDown size={16} className="hidden sm:block text-muted-foreground" />
-          </div>
+          </Link>
         </div>
       </div>
     </header>

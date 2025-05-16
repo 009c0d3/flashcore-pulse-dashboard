@@ -1,11 +1,12 @@
 
 import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { SidebarLink } from "@/types";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const sidebarLinks: SidebarLink[] = [
-  { label: "Dashboard", icon: "📊", path: "/" },
+  { label: "Dashboard", icon: "📊", path: "/dashboard" },
   { label: "Refer & Earn", icon: "🎁", path: "/refer", isNew: true },
   { label: "My Activation", icon: "🔑", path: "/activation" },
   { label: "Child Panel", icon: "👥", path: "/child-panel", isNew: true },
@@ -30,6 +31,7 @@ interface SidebarProps {
 
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const location = useLocation();
   
   const toggleExpand = (label: string) => {
     setExpandedItems(prev => 
@@ -37,6 +39,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         ? prev.filter(item => item !== label) 
         : [...prev, label]
     );
+  };
+
+  // Check if a path is active (exact match or subpath)
+  const isActivePath = (path: string) => {
+    if (path === "/dashboard" && location.pathname === "/") {
+      return true; // Consider dashboard active on home page too
+    }
+    return location.pathname === path || 
+           (path !== "/" && location.pathname.startsWith(path));
   };
   
   return (
@@ -59,9 +70,11 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="flex flex-col h-full">
           {/* Logo section */}
           <div className="flex items-center justify-center h-16 border-b border-sidebar-border">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
-              FLASHCORE
-            </h1>
+            <Link to="/">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
+                FLASHCORE
+              </h1>
+            </Link>
           </div>
           
           {/* Links */}
@@ -72,7 +85,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                   {link.subLinks ? (
                     <div className="space-y-1">
                       <button
-                        className="flex items-center w-full px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors"
+                        className={cn(
+                          "flex items-center w-full px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors",
+                          isActivePath(link.path) && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                        )}
                         onClick={() => toggleExpand(link.label)}
                       >
                         <span className="mr-2">{link.icon}</span>
@@ -93,22 +109,28 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         <ul className="pl-5 space-y-1">
                           {link.subLinks.map((subLink) => (
                             <li key={subLink.label}>
-                              <a
-                                href={subLink.path}
-                                className="flex items-center px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors"
+                              <Link
+                                to={subLink.path}
+                                className={cn(
+                                  "flex items-center px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors",
+                                  isActivePath(subLink.path) && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                                )}
                               >
                                 <span className="mr-2">{subLink.icon}</span>
                                 <span>{subLink.label}</span>
-                              </a>
+                              </Link>
                             </li>
                           ))}
                         </ul>
                       )}
                     </div>
                   ) : (
-                    <a
-                      href={link.path}
-                      className="flex items-center px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors"
+                    <Link
+                      to={link.path}
+                      className={cn(
+                        "flex items-center px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors",
+                        isActivePath(link.path) && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                      )}
                     >
                       <span className="mr-2">{link.icon}</span>
                       <span>{link.label}</span>
@@ -117,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                           New
                         </span>
                       )}
-                    </a>
+                    </Link>
                   )}
                 </li>
               ))}
