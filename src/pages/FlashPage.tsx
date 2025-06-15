@@ -1,9 +1,9 @@
-
-import React from "react";
+import React, { useState } from "react";
 import { Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DashboardModule from "@/components/DashboardModule";
 import { Link } from "react-router-dom";
+import { GenerateTransactionModal } from "@/components/flash/GenerateTransactionModal";
 
 const flashFeatures = [
   {
@@ -27,6 +27,8 @@ const flashFeatures = [
 ];
 
 const FlashPage = () => {
+  const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
+
   return (
     <div className="min-h-screen flex">
       <div className="flex-1">
@@ -53,15 +55,25 @@ const FlashPage = () => {
                     {desc}
                   </p>
                   
-                  <Button 
-                    asChild
-                    className="w-full bg-gradient-to-r from-flashcore-purple to-flashcore-green hover:opacity-90 transition-opacity font-medium"
-                  >
-                    <Link to="/wallet">
-                      {button}
-                      <Zap className="ml-2 h-4 w-4" />
-                    </Link>
-                  </Button>
+                  {title === 'Generate Transaction' ? (
+                     <Button 
+                       onClick={() => setTransactionModalOpen(true)}
+                       className="w-full bg-gradient-to-r from-flashcore-purple to-flashcore-green hover:opacity-90 transition-opacity font-medium"
+                     >
+                       {button}
+                       <Zap className="ml-2 h-4 w-4" />
+                     </Button>
+                  ) : (
+                    <Button 
+                      asChild
+                      className="w-full bg-gradient-to-r from-flashcore-purple to-flashcore-green hover:opacity-90 transition-opacity font-medium"
+                    >
+                      <Link to="/wallet">
+                        {button}
+                        <Zap className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               </DashboardModule>
             ))}
@@ -78,6 +90,7 @@ const FlashPage = () => {
           </div>
         </main>
       </div>
+      <GenerateTransactionModal isOpen={isTransactionModalOpen} onOpenChange={setTransactionModalOpen} />
     </div>
   );
 };
