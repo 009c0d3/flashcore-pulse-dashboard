@@ -1,4 +1,3 @@
-
 import { Wallet } from '@/lib/walletTypes';
 
 export const wallets: Wallet[] = [
@@ -68,7 +67,7 @@ export const wallets: Wallet[] = [
   },
   {
     name: "MetaMask",
-    icon: "WalletIcon",
+    icon: "Wallet",
     iconClassName: "w-8 h-8 text-orange-500",
     color: "from-orange-500 to-red-600",
     hasAI: true,

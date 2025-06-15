@@ -6,6 +6,7 @@ import FeaturesSection from "@/components/landing/FeaturesSection";
 import StatsSection from "@/components/landing/StatsSection";
 import CtaSection from "@/components/landing/CtaSection";
 import LandingFooter from "@/components/landing/LandingFooter";
+import CoinSliderSection from "@/components/landing/CoinSliderSection";
 
 const Index = () => {
   return (
@@ -13,6 +14,7 @@ const Index = () => {
       <LandingHeader />
       <main>
         <HeroSection />
+        <CoinSliderSection />
         <FeaturesSection />
         <StatsSection />
         <CtaSection />
