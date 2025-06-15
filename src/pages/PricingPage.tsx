@@ -5,10 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Check, CreditCard, Smartphone, Building, Bitcoin } from "lucide-react";
+import CreditCardForm from "@/components/payment/CreditCardForm";
+import PayPalForm from "@/components/payment/PayPalForm";
+import BankTransferForm from "@/components/payment/BankTransferForm";
+import CryptoForm from "@/components/payment/CryptoForm";
 
 const PricingPage = () => {
   const [selectedPlan, setSelectedPlan] = useState("3months");
   const [paymentMethod, setPaymentMethod] = useState("card");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const plans = [
     {
@@ -71,10 +76,33 @@ const PricingPage = () => {
     { id: "crypto", name: "Cryptocurrency", icon: Bitcoin, description: "Bitcoin, Ethereum, and other cryptocurrencies" }
   ];
 
-  const handleSubscribe = () => {
+  const handlePaymentSubmit = async (paymentData: any) => {
+    setIsProcessing(true);
     const plan = plans.find(p => p.id === selectedPlan);
-    console.log(`Subscribing to ${plan?.name} with ${paymentMethod} payment method`);
+    
+    console.log(`Processing payment for ${plan?.name} with ${paymentMethod}:`, paymentData);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    
     // Here you would integrate with your payment processor
+    alert(`Payment processed successfully for ${plan?.name}!`);
+    setIsProcessing(false);
+  };
+
+  const renderPaymentForm = () => {
+    switch (paymentMethod) {
+      case "card":
+        return <CreditCardForm onSubmit={handlePaymentSubmit} isLoading={isProcessing} />;
+      case "paypal":
+        return <PayPalForm onSubmit={handlePaymentSubmit} isLoading={isProcessing} />;
+      case "bank":
+        return <BankTransferForm onSubmit={handlePaymentSubmit} isLoading={isProcessing} />;
+      case "crypto":
+        return <CryptoForm onSubmit={handlePaymentSubmit} isLoading={isProcessing} />;
+      default:
+        return null;
+    }
   };
 
   return (
@@ -140,59 +168,64 @@ const PricingPage = () => {
         ))}
       </div>
 
-      {/* Payment Methods */}
-      <Card className="max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle>Payment Method</CardTitle>
-          <CardDescription>Choose how you'd like to pay for your subscription</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-4">
-            {paymentMethods.map((method) => (
-              <div key={method.id} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-secondary/50 cursor-pointer">
-                <RadioGroupItem value={method.id} id={method.id} />
-                <method.icon size={24} className="text-muted-foreground" />
-                <div className="flex-1">
-                  <Label htmlFor={method.id} className="font-medium cursor-pointer">
-                    {method.name}
-                  </Label>
-                  <p className="text-sm text-muted-foreground">{method.description}</p>
+      {/* Payment Methods and Forms */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        {/* Payment Method Selection */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Method</CardTitle>
+            <CardDescription>Choose how you'd like to pay for your subscription</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-4">
+              {paymentMethods.map((method) => (
+                <div key={method.id} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-secondary/50 cursor-pointer">
+                  <RadioGroupItem value={method.id} id={method.id} />
+                  <method.icon size={24} className="text-muted-foreground" />
+                  <div className="flex-1">
+                    <Label htmlFor={method.id} className="font-medium cursor-pointer">
+                      {method.name}
+                    </Label>
+                    <p className="text-sm text-muted-foreground">{method.description}</p>
+                  </div>
                 </div>
+              ))}
+            </RadioGroup>
+
+            {/* Summary */}
+            <div className="mt-6 p-4 bg-secondary/20 rounded-lg">
+              <h3 className="font-semibold mb-2">Order Summary</h3>
+              <div className="flex justify-between items-center">
+                <span>Selected Plan:</span>
+                <span className="font-medium">
+                  {plans.find(p => p.id === selectedPlan)?.name} - {plans.find(p => p.id === selectedPlan)?.price}/month
+                </span>
               </div>
-            ))}
-          </RadioGroup>
-
-          {/* Summary */}
-          <div className="mt-6 p-4 bg-secondary/20 rounded-lg">
-            <h3 className="font-semibold mb-2">Order Summary</h3>
-            <div className="flex justify-between items-center">
-              <span>Selected Plan:</span>
-              <span className="font-medium">
-                {plans.find(p => p.id === selectedPlan)?.name} - {plans.find(p => p.id === selectedPlan)?.price}/month
-              </span>
+              <div className="flex justify-between items-center mt-1">
+                <span>Payment Method:</span>
+                <span className="font-medium">
+                  {paymentMethods.find(m => m.id === paymentMethod)?.name}
+                </span>
+              </div>
             </div>
-            <div className="flex justify-between items-center mt-1">
-              <span>Payment Method:</span>
-              <span className="font-medium">
-                {paymentMethods.find(m => m.id === paymentMethod)?.name}
-              </span>
-            </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* Subscribe Button */}
-          <Button 
-            onClick={handleSubscribe}
-            className="w-full mt-6 bg-flashcore-purple hover:bg-flashcore-purple/90"
-            size="lg"
-          >
-            Subscribe Now - {plans.find(p => p.id === selectedPlan)?.price}/month
-          </Button>
-
-          <p className="text-xs text-muted-foreground text-center mt-4">
-            You can cancel your subscription at any time. No setup fees or hidden charges.
-          </p>
-        </CardContent>
-      </Card>
+        {/* Payment Form */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Payment Details</CardTitle>
+            <CardDescription>Complete your payment information</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {renderPaymentForm()}
+            
+            <p className="text-xs text-muted-foreground text-center mt-4">
+              You can cancel your subscription at any time. No setup fees or hidden charges.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
