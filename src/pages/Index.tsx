@@ -3,7 +3,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Shield, Zap, Users, TrendingUp, Star, CheckCircle, Globe, Smartphone, Lock, LogIn, UserPlus } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { ArrowRight, Shield, Zap, Users, TrendingUp, Star, CheckCircle, Globe, Smartphone, Lock, LogIn, UserPlus, Menu } from "lucide-react";
 
 const Index = () => {
   return (
@@ -16,12 +17,12 @@ const Index = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-flashcore-purple to-flashcore-green rounded-lg flex items-center justify-center">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
+              <Link to="/" className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
                 FLASHCORE
-              </span>
+              </Link>
             </div>
             
-            {/* Menu Navigation */}
+            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-6">
               <Link to="/plans" className="text-foreground hover:text-flashcore-purple transition-colors">
                 Plans
@@ -33,6 +34,34 @@ const Index = () => {
                 Contact
               </Link>
             </nav>
+
+            {/* Mobile Hamburger Menu */}
+            <div className="md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem asChild>
+                    <Link to="/plans" className="w-full">
+                      Plans
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/features" className="w-full">
+                      Features
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/contact" className="w-full">
+                      Contact
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
             
             <div className="flex items-center space-x-4">
               <Button variant="ghost" asChild className="flex items-center gap-2">
