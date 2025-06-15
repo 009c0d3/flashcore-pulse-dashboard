@@ -13,9 +13,9 @@ const Index = () => {
       <header className="border-b border-border/40 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <Logo className="w-16 h-16 shadow-lg drop-shadow-lg" />
-              <Link to="/" className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
+            <div className="flex items-center">
+              <Logo className="w-16 h-16" />
+              <Link to="/" className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent -ml-2">
                 FLASHCORE
               </Link>
             </div>
@@ -237,9 +237,9 @@ const Index = () => {
         <div className="container mx-auto px-4 py-16">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Logo className="w-16 h-16 shadow-lg drop-shadow-lg" />
-                <span className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
+              <div className="flex items-center">
+                <Logo className="w-16 h-16" />
+                <span className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent -ml-2">
                   FLASHCORE
                 </span>
               </div>
