@@ -1,21 +1,32 @@
 
-import React, { useEffect } from "react";
+import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { LogOut, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 const LogoutPage = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   
-  // In a real app, this would have actual logout logic
-  // For now, it's just a confirmation page
-  const handleLogout = () => {
-    console.log("User logged out");
-    // Redirect to login page after logout
-    setTimeout(() => {
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    
+    if (error) {
+      toast({
+        title: "Logout Error",
+        description: error.message,
+        variant: "destructive"
+      });
+    } else {
+      toast({
+        title: "Logged Out",
+        description: "You have been successfully logged out.",
+      });
       navigate("/login");
-    }, 1500);
+    }
   };
   
   return (
