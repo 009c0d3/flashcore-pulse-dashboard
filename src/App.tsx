@@ -41,12 +41,14 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Landing page without layout */}
+          <Route path="/" element={<Index />} />
+          
           {/* Auth pages without layout */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           
-          {/* Pages with layout */}
-          <Route path="/" element={<Layout><Index /></Layout>} />
+          {/* Pages with dashboard layout */}
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
           <Route path="/refer" element={<Layout><ReferEarnPage /></Layout>} />
           <Route path="/world-chat" element={<Layout><WorldChatPage /></Layout>} />
