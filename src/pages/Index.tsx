@@ -21,6 +21,19 @@ const Index = () => {
               </span>
             </div>
             
+            {/* Menu Navigation */}
+            <nav className="hidden md:flex items-center space-x-6">
+              <Link to="/plans" className="text-foreground hover:text-flashcore-purple transition-colors">
+                Plans
+              </Link>
+              <Link to="/features" className="text-foreground hover:text-flashcore-green transition-colors">
+                Features
+              </Link>
+              <Link to="/contact" className="text-foreground hover:text-flashcore-orange transition-colors">
+                Contact
+              </Link>
+            </nav>
+            
             <div className="flex items-center space-x-4">
               <Button variant="ghost" asChild className="flex items-center gap-2">
                 <Link to="/login">

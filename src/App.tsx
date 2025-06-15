@@ -23,6 +23,8 @@ import FlashPage from "./pages/FlashPage";
 import WorldChatPage from "./pages/WorldChatPage";
 import ContactUsPage from "./pages/ContactUsPage";
 import PricingPage from "./pages/PricingPage";
+import PlansPage from "./pages/PlansPage";
+import FeaturesPage from "./pages/FeaturesPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -43,6 +45,10 @@ const App = () => (
         <Routes>
           {/* Landing page without layout */}
           <Route path="/" element={<Index />} />
+          
+          {/* Landing pages without layout */}
+          <Route path="/plans" element={<PlansPage />} />
+          <Route path="/features" element={<FeaturesPage />} />
           
           {/* Auth pages without layout */}
           <Route path="/login" element={<LoginPage />} />
