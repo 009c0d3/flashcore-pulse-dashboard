@@ -3,6 +3,7 @@ import React from "react";
 import { Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DashboardModule from "@/components/DashboardModule";
+import { Link } from "react-router-dom";
 
 const flashFeatures = [
   {
@@ -53,10 +54,13 @@ const FlashPage = () => {
                   </p>
                   
                   <Button 
+                    asChild
                     className="w-full bg-gradient-to-r from-flashcore-purple to-flashcore-green hover:opacity-90 transition-opacity font-medium"
                   >
-                    {button}
-                    <Zap className="ml-2 h-4 w-4" />
+                    <Link to="/wallet">
+                      {button}
+                      <Zap className="ml-2 h-4 w-4" />
+                    </Link>
                   </Button>
                 </div>
               </DashboardModule>
