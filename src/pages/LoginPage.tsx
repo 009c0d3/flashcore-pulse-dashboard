@@ -16,7 +16,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted/40 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-muted/40 p-4 glow-background">
       <div className="absolute top-8 left-8">
         <Link to="/" className="flex items-center">
           <Logo className="w-12 h-12" />
