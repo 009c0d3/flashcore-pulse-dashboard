@@ -1,11 +1,10 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Check, CreditCard, Smartphone, Building } from "lucide-react";
+import { Check, CreditCard, Smartphone, Building, Bitcoin } from "lucide-react";
 
 const PricingPage = () => {
   const [selectedPlan, setSelectedPlan] = useState("3months");
@@ -68,7 +67,8 @@ const PricingPage = () => {
   const paymentMethods = [
     { id: "card", name: "Credit/Debit Card", icon: CreditCard, description: "Visa, Mastercard, American Express" },
     { id: "paypal", name: "PayPal", icon: Smartphone, description: "Pay with your PayPal account" },
-    { id: "bank", name: "Bank Transfer", icon: Building, description: "Direct bank transfer" }
+    { id: "bank", name: "Bank Transfer", icon: Building, description: "Direct bank transfer" },
+    { id: "crypto", name: "Cryptocurrency", icon: Bitcoin, description: "Bitcoin, Ethereum, and other cryptocurrencies" }
   ];
 
   const handleSubscribe = () => {
