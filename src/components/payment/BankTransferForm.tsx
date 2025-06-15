@@ -1,3 +1,4 @@
+
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -180,9 +181,9 @@ const BankTransferForm: React.FC<BankTransferFormProps> = ({ onSubmit, isLoading
                     type="file"
                     accept="image/*,.pdf"
                     onChange={(e) => onChange(e.target.files?.[0])}
-                    className="file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-medium file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                   />
-                  <Upload size={16} className="text-muted-foreground" />
+                  <Upload size={16} className="text-muted-foreground shrink-0" />
                 </div>
               </FormControl>
               <p className="text-xs text-muted-foreground">
