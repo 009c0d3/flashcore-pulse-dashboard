@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +20,8 @@ import PaymentHistoryPage from "./pages/PaymentHistoryPage";
 import TutorialPage from "./pages/TutorialPage";
 import LogoutPage from "./pages/LogoutPage";
 import FlashPage from "./pages/FlashPage";
+import WorldChatPage from "./pages/WorldChatPage";
+import ContactUsPage from "./pages/ContactUsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,7 +48,9 @@ const App = () => (
           <Route path="/" element={<Layout><Index /></Layout>} />
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
           <Route path="/refer" element={<Layout><ReferEarnPage /></Layout>} />
+          <Route path="/world-chat" element={<Layout><WorldChatPage /></Layout>} />
           <Route path="/activation" element={<Layout><ActivationPage /></Layout>} />
+          <Route path="/contact" element={<Layout><ContactUsPage /></Layout>} />
           <Route path="/child-panel" element={<Layout><ChildPanelPage /></Layout>} />
           <Route path="/features" element={<Layout><FeatureRequestPage /></Layout>} />
           <Route path="/history" element={<Layout><HistoryPage /></Layout>} />
