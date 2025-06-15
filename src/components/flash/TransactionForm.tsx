@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +21,7 @@ import {
 } from "@/components/ui/select";
 import { wallets } from "@/data/wallets";
 import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 const formSchema = z.object({
   recipientEmail: z.string().email({ message: "Invalid email address." }),
@@ -88,6 +88,8 @@ export const TransactionForm = () => {
     mode: 'onChange',
   });
 
+  const { formState: { isSubmitting } } = form;
+
   const prefillForm = () => {
     form.reset({
       recipientEmail: "test@example.com",
@@ -102,8 +104,9 @@ export const TransactionForm = () => {
     toast.info("Form has been prefilled with example data.");
   };
 
-  function onSubmit(data: TransactionFormValues) {
+  async function onSubmit(data: TransactionFormValues) {
     console.log(data);
+    await new Promise(resolve => setTimeout(resolve, 5000));
     toast.success("Transaction email has been sent successfully!");
     form.reset();
     setCurrentStep(1);
@@ -125,6 +128,18 @@ export const TransactionForm = () => {
   const handlePrevious = () => {
     setCurrentStep((prev) => prev - 1);
   };
+
+  if (isSubmitting) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] gap-4 text-center">
+        <Loader className="w-16 h-16 animate-spin text-primary" />
+        <div>
+          <p className="text-xl font-medium text-foreground">Sending Transaction</p>
+          <p className="text-muted-foreground">Please wait, this may take a moment...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>

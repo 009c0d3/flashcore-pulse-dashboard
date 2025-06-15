@@ -24,7 +24,7 @@ export const GenerateTransactionModal: React.FC<GenerateTransactionModalProps> =
             Fill in the details below to send a transaction email.
           </DialogDescription>
         </DialogHeader>
-        <div className="py-4">
+        <div>
           <TransactionForm />
         </div>
       </DialogContent>
