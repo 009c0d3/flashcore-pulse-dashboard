@@ -91,6 +91,34 @@ const wallets = [
     icon: "💸",
     color: "from-purple-600 to-pink-600",
     hasAI: true
+  },
+  {
+    name: "Exodus",
+    icon: "🎒",
+    color: "from-purple-500 to-pink-500",
+    hasAI: true,
+    hasBulkFlashing: true,
+  },
+  {
+    name: "Ledger",
+    icon: "🔒",
+    color: "from-gray-800 to-black",
+    hasAI: true,
+    hasBulkFlashing: true,
+    isHot: true,
+  },
+  {
+    name: "Kraken",
+    icon: "🐙",
+    color: "from-purple-600 to-indigo-700",
+    hasAI: true,
+    hasBulkFlashing: true,
+  },
+  {
+    name: "Venmo",
+    icon: "🤝",
+    color: "from-blue-400 to-blue-500",
+    hasAI: true,
   }
 ];
 
