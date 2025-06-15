@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,6 +26,7 @@ import PlansPage from "./pages/PlansPage";
 import FeaturesPage from "./pages/FeaturesPage";
 import ContactPage from "./pages/ContactPage";
 import PricingLandingPage from "./pages/PricingLandingPage";
+import WalletPage from "./pages/WalletPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,6 +57,9 @@ const App = () => (
           {/* Auth pages without layout */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          
+          {/* Wallet page without layout */}
+          <Route path="/wallet" element={<WalletPage />} />
           
           {/* Pages with dashboard layout */}
           <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
