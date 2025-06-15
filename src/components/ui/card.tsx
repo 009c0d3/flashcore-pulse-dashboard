@@ -1,5 +1,3 @@
-
-
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -11,13 +9,13 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border border-border/20 shadow-lg",
+      "rounded-lg border border-border/20 shadow-xl",
       "relative before:absolute before:inset-0 before:rounded-lg before:p-[1px]",
-      "before:bg-gradient-to-br before:from-flashcore-purple/50 before:via-flashcore-green/30 before:to-flashcore-orange/50",
-      "before:shadow-[0_0_25px_rgba(161,107,247,0.4),0_0_50px_rgba(76,217,123,0.3),0_0_75px_rgba(255,159,64,0.4)]",
-      "after:absolute after:inset-[1px] after:rounded-lg after:bg-gradient-to-br after:from-gray-900/95 after:via-gray-800/90 after:to-gray-900/95",
+      "before:bg-gradient-to-br before:from-flashcore-purple/60 before:via-flashcore-green/40 before:to-flashcore-orange/60",
+      "before:shadow-[0_0_30px_rgba(161,107,247,0.5),0_0_60px_rgba(76,217,123,0.4),0_0_90px_rgba(255,159,64,0.5)]",
+      "after:absolute after:inset-[1px] after:rounded-lg after:bg-gray-900",
       "after:backdrop-blur-sm",
-      "text-white",
+      "text-white overflow-hidden",
       className
     )}
     {...props}
@@ -85,4 +83,3 @@ const CardFooter = React.forwardRef<
 CardFooter.displayName = "CardFooter"
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
-
