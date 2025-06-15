@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -161,69 +160,79 @@ const WalletPage = () => {
             </div>
 
             {/* Wallet Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
               {wallets.map((wallet) => (
                 <div
                   key={wallet.name}
-                  className={`relative bg-gradient-to-br ${wallet.color} rounded-2xl p-6 cursor-pointer transition-transform hover:scale-105 hover:shadow-2xl`}
+                  className="group"
+                  style={{ perspective: '1000px' }}
                 >
-                  {/* AI Badge */}
-                  {wallet.hasAI && (
-                    <div className="absolute top-3 left-3 flex items-center space-x-1 bg-black/30 backdrop-blur-sm rounded-full px-2 py-1">
-                      <span className="text-xs font-semibold">AI</span>
-                      <span className="text-pink-300">🧠</span>
-                    </div>
-                  )}
+                  <div
+                    className="relative rounded-2xl p-6 cursor-pointer h-full transition-all duration-300 group-hover:shadow-2xl [transform-style:preserve-3d] group-hover:[transform:rotateX(5deg)_rotateY(-10deg)]"
+                  >
+                    <div className={`absolute inset-0 bg-gradient-to-br ${wallet.color} rounded-2xl opacity-20 group-hover:opacity-30 transition-opacity duration-300`}></div>
+                    <div className="absolute inset-0 bg-black/20 backdrop-blur-md rounded-2xl border border-white/10"></div>
+                    
+                    <div className="relative">
+                      {/* AI Badge */}
+                      {wallet.hasAI && (
+                        <div className="absolute top-3 left-3 flex items-center space-x-1 bg-black/30 backdrop-blur-sm rounded-full px-2 py-1">
+                          <span className="text-xs font-semibold">AI</span>
+                          <span className="text-pink-300">🧠</span>
+                        </div>
+                      )}
 
-                  {/* Status Badges */}
-                  <div className="absolute top-3 right-3 flex flex-col space-y-1">
-                    {wallet.isHot && (
-                      <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1">
-                        HOT 🔥
-                      </Badge>
-                    )}
-                    {wallet.isTrending && (
-                      <Badge className="bg-pink-500 hover:bg-pink-600 text-white text-xs px-2 py-1">
-                        TRENDING 🚀
-                      </Badge>
-                    )}
-                    {wallet.isNew && (
-                      <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1">
-                        NEW
-                      </Badge>
-                    )}
+                      {/* Status Badges */}
+                      <div className="absolute top-3 right-3 flex flex-col space-y-1">
+                        {wallet.isHot && (
+                          <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1">
+                            HOT 🔥
+                          </Badge>
+                        )}
+                        {wallet.isTrending && (
+                          <Badge className="bg-pink-500 hover:bg-pink-600 text-white text-xs px-2 py-1">
+                            TRENDING 🚀
+                          </Badge>
+                        )}
+                        {wallet.isNew && (
+                          <Badge className="bg-red-500 hover:bg-red-600 text-white text-xs px-2 py-1">
+                            NEW
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Wallet Icon */}
+                      <div className="flex justify-center mb-4 mt-8">
+                        <div className="w-16 h-16 bg-black/20 rounded-full flex items-center justify-center text-2xl">
+                          {wallet.icon}
+                        </div>
+                      </div>
+
+                      {/* Wallet Name */}
+                      <h3 className="text-white text-xl font-bold text-center mb-4">
+                        {wallet.name}
+                      </h3>
+
+                      {/* Bulk Flashing Badge */}
+                      {wallet.hasBulkFlashing && (
+                        <div className="absolute bottom-3 right-3">
+                          <Badge className="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-1">
+                            BULK FLASHING
+                          </Badge>
+                        </div>
+                      )}
+
+                      {/* Special handling for Message Us card */}
+                      {wallet.isSpecial && (
+                        <div className="absolute bottom-4 left-4 right-4">
+                          <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 rounded-xl">
+                            <MessageCircle className="w-4 h-4 mr-2" />
+                            Message Us
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-
-                  {/* Wallet Icon */}
-                  <div className="flex justify-center mb-4 mt-8">
-                    <div className="w-16 h-16 bg-black/20 rounded-full flex items-center justify-center text-2xl">
-                      {wallet.icon}
-                    </div>
-                  </div>
-
-                  {/* Wallet Name */}
-                  <h3 className="text-white text-xl font-bold text-center mb-4">
-                    {wallet.name}
-                  </h3>
-
-                  {/* Bulk Flashing Badge */}
-                  {wallet.hasBulkFlashing && (
-                    <div className="absolute bottom-3 right-3">
-                      <Badge className="bg-red-600 hover:bg-red-700 text-white font-semibold px-3 py-1">
-                        BULK FLASHING
-                      </Badge>
-                    </div>
-                  )}
-
-                  {/* Special handling for Message Us card */}
-                  {wallet.isSpecial && (
-                    <div className="absolute bottom-4 left-4 right-4">
-                      <Button className="w-full bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 rounded-xl">
-                        <MessageCircle className="w-4 h-4 mr-2" />
-                        Message Us
-                      </Button>
-                    </div>
-                  )}
                 </div>
               ))}
             </div>
