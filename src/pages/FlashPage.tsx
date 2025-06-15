@@ -2,92 +2,91 @@
 import React from "react";
 import { Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-
-// Card-specific gradient color configs:
-const cardGradients = [
-  "from-[#43e97b] via-[#38f9d7] to-[#4cd97b]", // Green/Cyan
-  "from-[#a16bf7] via-[#f89b29] to-[#ff9f40]",   // Purple/Orange
-  "from-[#43cea2] via-[#185a9d] to-[#2af598]",   // Aqua/Blue-green
-];
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const flashFeatures = [
   {
     title: "Generate Transaction",
     desc: "Instantly send wallet transaction emails to your users with all the details, in a flash.",
     button: "Generate",
+    borderColor: "border-flashcore-green",
+    iconBg: "bg-flashcore-green/20",
+    buttonGradient: "from-flashcore-green to-emerald-500"
   },
   {
     title: "Flash Billing",
     desc: "Send billing emails instantly and manage all your invoices from one place.",
     button: "Flash Bill",
+    borderColor: "border-flashcore-orange",
+    iconBg: "bg-flashcore-orange/20",
+    buttonGradient: "from-flashcore-orange to-orange-500"
   },
   {
     title: "Generate Receipts",
     desc: "Quickly create transaction receipts for any wallet transaction.",
     button: "Create Receipt",
+    borderColor: "border-flashcore-purple",
+    iconBg: "bg-flashcore-purple/20",
+    buttonGradient: "from-flashcore-purple to-purple-500"
   },
 ];
 
 const FlashPage = () => {
   return (
-    <div
-      className="min-h-screen w-full py-12 px-2 sm:px-8"
-      style={{
-        background: "linear-gradient(135deg, #15161b 65%, #2af59822 100%)",
-      }}
-    >
-      <div className="container max-w-3xl mx-auto">
-        <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-12 text-center">
-          ⚡ Flash Tools
-        </h1>
-        <div className="grid gap-8">
-          {flashFeatures.map(({ title, desc, button }, i) => (
+    <div className="min-h-screen bg-background p-6">
+      <div className="container max-w-4xl mx-auto">
+        <div className="mb-8">
+          <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+            ⚡ Flash Tools
+          </h1>
+          <p className="text-muted-foreground">
+            Quick access to your most powerful automation tools
+          </p>
+        </div>
+        
+        <div className="grid gap-6 md:grid-cols-1 lg:grid-cols-1">
+          {flashFeatures.map(({ title, desc, button, borderColor, iconBg, buttonGradient }, i) => (
             <Card
               key={title}
-              className="overflow-hidden relative hover-scale shadow-lg border-0"
-              style={{
-                background:
-                  `linear-gradient(105deg, var(--tw-gradient-stops))`,
-              }}
+              className={`bg-card/50 backdrop-blur-sm border-2 ${borderColor} hover:bg-card/70 transition-all duration-300 hover:scale-[1.02]`}
             >
-              {/* Card gradient - use with Tailwind's bg-gradient-to-tr */}
-              <div className={`absolute inset-0 z-0 bg-gradient-to-tr opacity-80 ${cardGradients[i]} pointer-events-none`} />
-
-              <CardContent className="relative flex items-center gap-5 py-8 px-4 sm:py-10 sm:px-10 z-10">
-                <div className="flex-shrink-0">
-                  <div className="bg-white/10 rounded-full p-4 shadow-xl border border-white/10">
-                    <Zap size={54} className="text-white drop-shadow-lg" />
+              <CardContent className="p-6">
+                <div className="flex items-start gap-6">
+                  <div className={`${iconBg} rounded-xl p-4 flex-shrink-0`}>
+                    <Zap className="h-8 w-8 text-white" />
                   </div>
-                </div>
-                <div className="flex-1">
-                  <h2 className="text-xl sm:text-2xl font-semibold mb-2 text-white drop-shadow">
-                    {title}
-                  </h2>
-                  <p className="text-base text-white/90 mb-5">
-                    {desc}
-                  </p>
-                  <Button
-                    variant="default"
-                    className="mt-1 font-semibold px-6 py-2 rounded-lg text-white"
-                    style={{
-                      background: "linear-gradient(90deg, #4cd97b 5%, #8CBE06 100%)",
-                      boxShadow: "0 2px 16px 0 #4cd97b44",
-                    }}
-                  >
-                    <span className="flex items-center gap-2">
+                  
+                  <div className="flex-1 space-y-4">
+                    <div>
+                      <CardTitle className="text-xl font-semibold text-white mb-2">
+                        {title}
+                      </CardTitle>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {desc}
+                      </p>
+                    </div>
+                    
+                    <Button
+                      className={`bg-gradient-to-r ${buttonGradient} hover:opacity-90 transition-opacity font-medium px-6 py-2 text-white border-0`}
+                    >
                       {button}
-                      <span aria-hidden>
-                        <svg width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M5 9h8m0 0-3-3m3 3-3 3"></path>
-                        </svg>
-                      </span>
-                    </span>
-                  </Button>
+                      <Zap className="ml-2 h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           ))}
+        </div>
+        
+        <div className="mt-12 text-center">
+          <p className="text-sm text-muted-foreground">
+            Need help getting started? Check out our{" "}
+            <span className="text-flashcore-green hover:underline cursor-pointer">
+              tutorial section
+            </span>{" "}
+            for step-by-step guides.
+          </p>
         </div>
       </div>
     </div>
