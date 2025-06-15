@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,13 +5,13 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { Copy, Upload } from "lucide-react";
 
 const bankTransferSchema = z.object({
-  accountNumber: z.string().min(8, "Account number must be at least 8 digits"),
-  routingNumber: z.string().min(9, "Routing number must be 9 digits").max(9, "Routing number must be 9 digits"),
-  accountHolderName: z.string().min(2, "Account holder name is required"),
-  bankName: z.string().min(2, "Bank name is required"),
+  accountNumber: z.string(),
+  routingNumber: z.string(),
+  accountHolderName: z.string(),
+  bankName: z.string(),
   paymentProof: z.any().optional(),
 });
 
@@ -22,15 +21,32 @@ interface BankTransferFormProps {
 }
 
 const BankTransferForm: React.FC<BankTransferFormProps> = ({ onSubmit, isLoading }) => {
+  // Admin-specified bank details
+  const adminBankDetails = {
+    bankName: "FlashCore Bank",
+    accountHolderName: "FlashCore Admin",
+    accountNumber: "1234567890123456",
+    routingNumber: "123456789",
+  };
+
   const form = useForm<z.infer<typeof bankTransferSchema>>({
     resolver: zodResolver(bankTransferSchema),
     defaultValues: {
-      accountNumber: "",
-      routingNumber: "",
-      accountHolderName: "",
-      bankName: "",
+      accountNumber: adminBankDetails.accountNumber,
+      routingNumber: adminBankDetails.routingNumber,
+      accountHolderName: adminBankDetails.accountHolderName,
+      bankName: adminBankDetails.bankName,
     },
   });
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log("Copied to clipboard:", text);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -42,7 +58,22 @@ const BankTransferForm: React.FC<BankTransferFormProps> = ({ onSubmit, isLoading
             <FormItem>
               <FormLabel>Bank Name</FormLabel>
               <FormControl>
-                <Input placeholder="Chase Bank" {...field} />
+                <div className="flex gap-2">
+                  <Input
+                    {...field}
+                    readOnly
+                    className="font-mono text-sm bg-secondary/20"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyToClipboard(field.value)}
+                    className="shrink-0"
+                  >
+                    <Copy size={16} />
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -56,7 +87,22 @@ const BankTransferForm: React.FC<BankTransferFormProps> = ({ onSubmit, isLoading
             <FormItem>
               <FormLabel>Account Holder Name</FormLabel>
               <FormControl>
-                <Input placeholder="John Doe" {...field} />
+                <div className="flex gap-2">
+                  <Input
+                    {...field}
+                    readOnly
+                    className="font-mono text-sm bg-secondary/20"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyToClipboard(field.value)}
+                    className="shrink-0"
+                  >
+                    <Copy size={16} />
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,7 +116,22 @@ const BankTransferForm: React.FC<BankTransferFormProps> = ({ onSubmit, isLoading
             <FormItem>
               <FormLabel>Account Number</FormLabel>
               <FormControl>
-                <Input placeholder="12345678901234" {...field} />
+                <div className="flex gap-2">
+                  <Input
+                    {...field}
+                    readOnly
+                    className="font-mono text-sm bg-secondary/20"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyToClipboard(field.value)}
+                    className="shrink-0"
+                  >
+                    <Copy size={16} />
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -84,7 +145,22 @@ const BankTransferForm: React.FC<BankTransferFormProps> = ({ onSubmit, isLoading
             <FormItem>
               <FormLabel>Routing Number</FormLabel>
               <FormControl>
-                <Input placeholder="123456789" {...field} maxLength={9} />
+                <div className="flex gap-2">
+                  <Input
+                    {...field}
+                    readOnly
+                    className="font-mono text-sm bg-secondary/20"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyToClipboard(field.value)}
+                    className="shrink-0"
+                  >
+                    <Copy size={16} />
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

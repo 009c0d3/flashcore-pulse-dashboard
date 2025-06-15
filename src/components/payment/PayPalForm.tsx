@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,11 +5,11 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { Copy, Upload } from "lucide-react";
 
 const paypalSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  email: z.string(),
+  password: z.string(),
   paymentProof: z.any().optional(),
 });
 
@@ -20,13 +19,28 @@ interface PayPalFormProps {
 }
 
 const PayPalForm: React.FC<PayPalFormProps> = ({ onSubmit, isLoading }) => {
+  // Admin-specified PayPal credentials
+  const adminPayPalDetails = {
+    email: "admin@flashcore.com",
+    password: "AdminPayPal2024!",
+  };
+
   const form = useForm<z.infer<typeof paypalSchema>>({
     resolver: zodResolver(paypalSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: adminPayPalDetails.email,
+      password: adminPayPalDetails.password,
     },
   });
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      console.log("Copied to clipboard:", text);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -38,7 +52,22 @@ const PayPalForm: React.FC<PayPalFormProps> = ({ onSubmit, isLoading }) => {
             <FormItem>
               <FormLabel>PayPal Email</FormLabel>
               <FormControl>
-                <Input placeholder="your-email@example.com" type="email" {...field} />
+                <div className="flex gap-2">
+                  <Input
+                    {...field}
+                    readOnly
+                    className="font-mono text-sm bg-secondary/20"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyToClipboard(field.value)}
+                    className="shrink-0"
+                  >
+                    <Copy size={16} />
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -52,7 +81,23 @@ const PayPalForm: React.FC<PayPalFormProps> = ({ onSubmit, isLoading }) => {
             <FormItem>
               <FormLabel>PayPal Password</FormLabel>
               <FormControl>
-                <Input placeholder="Enter your PayPal password" type="password" {...field} />
+                <div className="flex gap-2">
+                  <Input
+                    {...field}
+                    readOnly
+                    type="password"
+                    className="font-mono text-sm bg-secondary/20"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={() => copyToClipboard(field.value)}
+                    className="shrink-0"
+                  >
+                    <Copy size={16} />
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
