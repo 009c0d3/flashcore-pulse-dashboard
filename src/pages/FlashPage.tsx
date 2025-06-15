@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import DashboardModule from "@/components/DashboardModule";
 import { Link } from "react-router-dom";
 import { GenerateTransactionModal } from "@/components/flash/GenerateTransactionModal";
 import { FlashBillingModal } from "@/components/flash/FlashBillingModal";
+import { GenerateReceiptModal } from "@/components/flash/GenerateReceiptModal";
 
 const flashFeatures = [
   {
@@ -30,6 +32,7 @@ const flashFeatures = [
 const FlashPage = () => {
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
   const [isBillingModalOpen, setBillingModalOpen] = useState(false);
+  const [isReceiptModalOpen, setReceiptModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex">
@@ -75,13 +78,11 @@ const FlashPage = () => {
                      </Button>
                   ) : (
                     <Button 
-                      asChild
+                      onClick={() => setReceiptModalOpen(true)}
                       className="w-full bg-gradient-to-r from-flashcore-purple to-flashcore-green hover:opacity-90 transition-opacity font-medium"
                     >
-                      <Link to="/wallet">
-                        {button}
-                        <Zap className="ml-2 h-4 w-4" />
-                      </Link>
+                      {button}
+                      <Zap className="ml-2 h-4 w-4" />
                     </Button>
                   )}
                 </div>
@@ -102,6 +103,7 @@ const FlashPage = () => {
       </div>
       <GenerateTransactionModal isOpen={isTransactionModalOpen} onOpenChange={setTransactionModalOpen} />
       <FlashBillingModal isOpen={isBillingModalOpen} onOpenChange={setBillingModalOpen} />
+      <GenerateReceiptModal isOpen={isReceiptModalOpen} onOpenChange={setReceiptModalOpen} />
     </div>
   );
 };
