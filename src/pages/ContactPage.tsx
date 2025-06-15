@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Send, ArrowLeft } from "lucide-react";
@@ -20,8 +21,8 @@ const ContactPage = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                <Logo />
+              <div className="flex items-center justify-center">
+                <Logo className="w-16 h-16 shadow-lg drop-shadow-lg" />
               </div>
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
                 FLASHCORE

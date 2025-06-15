@@ -1,13 +1,17 @@
 
 import React from "react";
 
-export const Logo = ({ className = "w-8 h-8", ...props }: React.ComponentProps<"img">) => (
+export const Logo = ({
+  className = "w-16 h-16 shadow-lg drop-shadow-lg",
+  ...props
+}: React.ComponentProps<"img">) => (
   <img
     src="/lovable-uploads/c6274856-7224-4530-9f45-df3b9949127d.png"
     alt="FlashCore Logo"
-    className={className}
+    className={`rounded-xl bg-white/90 object-contain ${className}`}
     {...props}
   />
 );
 
 export default Logo;
+
