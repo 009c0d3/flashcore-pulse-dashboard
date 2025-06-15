@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import MotivationPopup from "./MotivationPopup";
 import { useIsMobile } from "@/hooks/use-mobile";
 
 interface LayoutProps {
@@ -11,6 +12,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const isMobile = useIsMobile();
   const [isSidebarOpen, setIsSidebarOpen] = useState(!isMobile);
+  const [isMotivationOpen, setIsMotivationOpen] = useState(false);
   
   // Update sidebar state when screen size changes
   useEffect(() => {
@@ -22,8 +24,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
   
   const openMotivationPopup = () => {
-    // You can implement the motivation popup here if needed
-    console.log("Open motivation popup");
+    setIsMotivationOpen(true);
+  };
+
+  const closeMotivationPopup = () => {
+    setIsMotivationOpen(false);
   };
 
   return (
@@ -40,6 +45,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           {children}
         </main>
       </div>
+      
+      <MotivationPopup 
+        isOpen={isMotivationOpen} 
+        onClose={closeMotivationPopup} 
+      />
     </div>
   );
 };
