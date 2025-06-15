@@ -35,7 +35,9 @@ const CoinSliderSection = () => {
             <CarouselItem key={index} className="pl-4 basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6">
               <div className="p-1">
                 <Card className="flex flex-col items-center justify-center p-6 bg-card/30 hover:bg-card/50 backdrop-blur-sm transition-colors duration-300 h-40">
-                  <Icon name={wallet.icon} className={wallet.iconClassName} />
+                  <div className="w-16 h-16 rounded-full flex items-center justify-center bg-secondary/30 border border-border/50">
+                    <Icon name={wallet.icon} className={wallet.iconClassName} />
+                  </div>
                   <p className="mt-4 font-semibold text-center text-sm">{wallet.name}</p>
                 </Card>
               </div>
