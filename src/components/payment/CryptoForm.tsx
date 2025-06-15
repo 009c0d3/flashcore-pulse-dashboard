@@ -7,6 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Copy } from "lucide-react";
 
 const cryptoSchema = z.object({
   walletAddress: z.string().min(26, "Please enter a valid wallet address"),
@@ -19,10 +20,18 @@ interface CryptoFormProps {
 }
 
 const CryptoForm: React.FC<CryptoFormProps> = ({ onSubmit, isLoading }) => {
+  // Admin-specified wallet addresses for each cryptocurrency
+  const adminWalletAddresses = {
+    bitcoin: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa",
+    ethereum: "0x742d35Cc6634C0532925a3b8D3Ac92Cf2c3A5b5B",
+    litecoin: "LdP8Qox1VAhCzLJNqrr74YovaWYyNBUWvL",
+    dogecoin: "DH5yaieqoZN36fDVciNyRueRGvGLR3mr7L",
+  };
+
   const form = useForm<z.infer<typeof cryptoSchema>>({
     resolver: zodResolver(cryptoSchema),
     defaultValues: {
-      walletAddress: "",
+      walletAddress: adminWalletAddresses.bitcoin,
       cryptoCurrency: "bitcoin",
     },
   });
@@ -33,6 +42,21 @@ const CryptoForm: React.FC<CryptoFormProps> = ({ onSubmit, isLoading }) => {
     { value: "litecoin", label: "Litecoin (LTC)", symbol: "Ł" },
     { value: "dogecoin", label: "Dogecoin (DOGE)", symbol: "Ð" },
   ];
+
+  const handleCryptoChange = (cryptoValue: string) => {
+    form.setValue("cryptoCurrency", cryptoValue);
+    form.setValue("walletAddress", adminWalletAddresses[cryptoValue as keyof typeof adminWalletAddresses]);
+  };
+
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(form.getValues("walletAddress"));
+      // You could add a toast notification here if needed
+      console.log("Wallet address copied to clipboard");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
 
   return (
     <Form {...form}>
@@ -45,7 +69,7 @@ const CryptoForm: React.FC<CryptoFormProps> = ({ onSubmit, isLoading }) => {
                 key={crypto.value}
                 variant={form.watch("cryptoCurrency") === crypto.value ? "default" : "outline"}
                 className="cursor-pointer p-2 justify-center"
-                onClick={() => form.setValue("cryptoCurrency", crypto.value)}
+                onClick={() => handleCryptoChange(crypto.value)}
               >
                 {crypto.symbol} {crypto.label}
               </Badge>
@@ -58,13 +82,24 @@ const CryptoForm: React.FC<CryptoFormProps> = ({ onSubmit, isLoading }) => {
           name="walletAddress"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Wallet Address</FormLabel>
+              <FormLabel>Admin Wallet Address</FormLabel>
               <FormControl>
-                <Input 
-                  placeholder="Enter your wallet address" 
-                  {...field}
-                  className="font-mono text-sm"
-                />
+                <div className="flex gap-2">
+                  <Input 
+                    {...field}
+                    readOnly
+                    className="font-mono text-sm bg-secondary/20"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    onClick={copyToClipboard}
+                    className="shrink-0"
+                  >
+                    <Copy size={16} />
+                  </Button>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>
