@@ -63,6 +63,34 @@ const wallets = [
     color: "from-purple-500 to-purple-700",
     hasAI: true,
     isNew: true
+  },
+  {
+    name: "MetaMask",
+    icon: "🦊",
+    color: "from-orange-500 to-red-600",
+    hasAI: true,
+    hasBulkFlashing: true,
+    isHot: true
+  },
+  {
+    name: "Phantom",
+    icon: "👻",
+    color: "from-purple-400 to-indigo-500",
+    hasAI: true,
+    hasBulkFlashing: true
+  },
+  {
+    name: "Revolut",
+    icon: "🌍",
+    color: "from-gray-700 to-black",
+    hasAI: true,
+    isNew: true
+  },
+  {
+    name: "Skrill",
+    icon: "💸",
+    color: "from-purple-600 to-pink-600",
+    hasAI: true
   }
 ];
 
