@@ -3,13 +3,51 @@ import React from 'react';
 import { Wallet } from '@/lib/walletTypes';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { MessageCircle } from 'lucide-react';
+import {
+  MessageCircle,
+  Coins,
+  CircleDollarSign,
+  DollarSign,
+  Shield,
+  CandlestickChart,
+  CreditCard,
+  Zap,
+  Wallet as WalletIcon,
+  Ghost,
+  Globe,
+  Milestone,
+  Box,
+  Lock,
+  Waves,
+  Users,
+} from "lucide-react";
+
+const iconComponents: { [key: string]: React.ElementType } = {
+  MessageCircle,
+  Coins,
+  CircleDollarSign,
+  DollarSign,
+  Shield,
+  CandlestickChart,
+  CreditCard,
+  Zap,
+  WalletIcon,
+  Ghost,
+  Globe,
+  Milestone,
+  Box,
+  Lock,
+  Waves,
+  Users,
+};
 
 interface WalletCardProps {
   wallet: Wallet;
 }
 
 const WalletCard: React.FC<WalletCardProps> = ({ wallet }) => {
+  const IconComponent = iconComponents[wallet.icon];
+
   return (
     <div
       className="group"
@@ -40,7 +78,7 @@ const WalletCard: React.FC<WalletCardProps> = ({ wallet }) => {
           {/* Middle section: Icon and Name */}
           <div className="flex flex-col items-center justify-center text-center">
             <div className="w-16 h-16 bg-black/20 rounded-full flex items-center justify-center text-white">
-              {wallet.icon}
+              {IconComponent && <IconComponent className={wallet.iconClassName} />}
             </div>
             <h3 className="text-white text-xl font-bold mt-4">
               {wallet.name}

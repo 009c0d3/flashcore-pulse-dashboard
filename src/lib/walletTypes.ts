@@ -1,9 +1,8 @@
 
-import React from 'react';
-
 export interface Wallet {
   name: string;
-  icon: React.ReactNode;
+  icon: string;
+  iconClassName: string;
   color: string;
   hasAI: boolean;
   isHot?: boolean;
