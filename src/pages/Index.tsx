@@ -48,7 +48,12 @@ const Index = () => {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/contact" className="w-full">
+                    <Link to="/pricing-landing" className="w-full">
+                      Pricing
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/contact-landing" className="w-full">
                       Contact
                     </Link>
                   </DropdownMenuItem>
@@ -227,7 +232,7 @@ const Index = () => {
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-              <Link to="/contact">Contact Sales</Link>
+              <Link to="/contact-landing">Contact Sales</Link>
             </Button>
           </div>
         </div>
@@ -256,7 +261,7 @@ const Index = () => {
               <div className="space-y-2">
                 <Link to="/dashboard" className="block text-muted-foreground hover:text-foreground transition-colors">Dashboard</Link>
                 <Link to="/features" className="block text-muted-foreground hover:text-foreground transition-colors">Features</Link>
-                <Link to="/pricing" className="block text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
+                <Link to="/pricing-landing" className="block text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
                 <Link to="/tutorials" className="block text-muted-foreground hover:text-foreground transition-colors">Tutorials</Link>
               </div>
             </div>
@@ -264,7 +269,7 @@ const Index = () => {
             <div>
               <h3 className="font-semibold mb-4">Support</h3>
               <div className="space-y-2">
-                <Link to="/contact" className="block text-muted-foreground hover:text-foreground transition-colors">Contact Us</Link>
+                <Link to="/contact-landing" className="block text-muted-foreground hover:text-foreground transition-colors">Contact Us</Link>
                 <Link to="/world-chat" className="block text-muted-foreground hover:text-foreground transition-colors">Community</Link>
                 <a href="#" className="block text-muted-foreground hover:text-foreground transition-colors">Documentation</a>
                 <a href="#" className="block text-muted-foreground hover:text-foreground transition-colors">API Reference</a>

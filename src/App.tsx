@@ -25,6 +25,8 @@ import ContactUsPage from "./pages/ContactUsPage";
 import PricingPage from "./pages/PricingPage";
 import PlansPage from "./pages/PlansPage";
 import FeaturesPage from "./pages/FeaturesPage";
+import ContactPage from "./pages/ContactPage";
+import PricingLandingPage from "./pages/PricingLandingPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,6 +51,8 @@ const App = () => (
           {/* Landing pages without layout */}
           <Route path="/plans" element={<PlansPage />} />
           <Route path="/features" element={<FeaturesPage />} />
+          <Route path="/contact-landing" element={<ContactPage />} />
+          <Route path="/pricing-landing" element={<PricingLandingPage />} />
           
           {/* Auth pages without layout */}
           <Route path="/login" element={<LoginPage />} />
