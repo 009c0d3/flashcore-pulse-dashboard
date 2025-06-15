@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { LogIn } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const LoginPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
@@ -17,8 +18,9 @@ const LoginPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-muted/40 p-4">
       <div className="absolute top-8 left-8">
-        <Link to="/">
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
+        <Link to="/" className="flex items-center">
+          <Logo className="w-12 h-12" />
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent -ml-1">
             FLASHCORE
           </h1>
         </Link>
