@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -19,6 +18,7 @@ import MailHistoryPage from "./pages/MailHistoryPage";
 import PaymentHistoryPage from "./pages/PaymentHistoryPage";
 import TutorialPage from "./pages/TutorialPage";
 import LogoutPage from "./pages/LogoutPage";
+import FlashPage from "./pages/FlashPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -52,6 +52,7 @@ const App = () => (
           <Route path="/history/mail" element={<Layout><MailHistoryPage /></Layout>} />
           <Route path="/history/payment" element={<Layout><PaymentHistoryPage /></Layout>} />
           <Route path="/tutorials" element={<Layout><TutorialPage /></Layout>} />
+          <Route path="/flash" element={<Layout><FlashPage /></Layout>} />
           <Route path="/logout" element={<Layout><LogoutPage /></Layout>} />
           
           {/* Catch-all route */}
