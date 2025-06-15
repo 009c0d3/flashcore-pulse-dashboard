@@ -14,9 +14,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
-              <div className="flex items-center justify-center">
-                <Logo className="w-16 h-16 shadow-lg drop-shadow-lg" />
-              </div>
+              <Logo className="w-16 h-16 shadow-lg drop-shadow-lg" />
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
                 FLASHCORE
               </Link>
@@ -38,11 +36,6 @@ const Index = () => {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem asChild>
-                    <Link to="/plans" className="w-full">
-                      Plans
-                    </Link>
-                  </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link to="/features" className="w-full">
                       Features
