@@ -7,11 +7,12 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Copy } from "lucide-react";
+import { Copy, Upload } from "lucide-react";
 
 const cryptoSchema = z.object({
   walletAddress: z.string().min(26, "Please enter a valid wallet address"),
   cryptoCurrency: z.string().min(1, "Please select a cryptocurrency"),
+  paymentProof: z.any().optional(),
 });
 
 interface CryptoFormProps {
@@ -105,18 +106,45 @@ const CryptoForm: React.FC<CryptoFormProps> = ({ onSubmit, isLoading }) => {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="paymentProof"
+          render={({ field: { onChange, value, ...field } }) => (
+            <FormItem>
+              <FormLabel>Upload Payment Proof</FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Input
+                    {...field}
+                    type="file"
+                    accept="image/*,.pdf"
+                    onChange={(e) => onChange(e.target.files?.[0])}
+                    className="file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-medium file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+                  />
+                  <Upload size={16} className="text-muted-foreground" />
+                </div>
+              </FormControl>
+              <p className="text-xs text-muted-foreground">
+                Upload screenshot or receipt of your payment (JPG, PNG, PDF)
+              </p>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         
         <div className="bg-secondary/20 p-3 rounded-lg">
           <h4 className="font-semibold text-sm mb-2">Payment Instructions:</h4>
           <p className="text-xs text-muted-foreground">
             1. Send the exact amount to the generated address<br/>
             2. Include the payment reference in the transaction<br/>
-            3. Payment will be confirmed within 3-6 confirmations
+            3. Upload proof of payment above<br/>
+            4. Payment will be confirmed within 3-6 confirmations
           </p>
         </div>
         
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Generating Address..." : "Generate Payment Address"}
+          {isLoading ? "Submitting Receipt..." : "Send Payment Receipt/Proof"}
         </Button>
       </form>
     </Form>
