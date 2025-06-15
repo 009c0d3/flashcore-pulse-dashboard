@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -22,21 +21,15 @@ const Index = () => {
               </Link>
             </div>
             
-            {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link to="/plans" className="text-foreground hover:text-flashcore-purple transition-colors">
-                Plans
-              </Link>
-              <Link to="/features" className="text-foreground hover:text-flashcore-green transition-colors">
-                Features
-              </Link>
-              <Link to="/contact" className="text-foreground hover:text-flashcore-orange transition-colors">
-                Contact
-              </Link>
-            </nav>
-
-            {/* Mobile Hamburger Menu */}
-            <div className="md:hidden">
+            <div className="flex items-center space-x-4">
+              <Button asChild className="flex items-center gap-2">
+                <Link to="/register">
+                  <UserPlus className="w-4 h-4" />
+                  Get Started
+                </Link>
+              </Button>
+              
+              {/* Hamburger Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon">
@@ -59,23 +52,14 @@ const Index = () => {
                       Contact
                     </Link>
                   </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/login" className="w-full flex items-center gap-2">
+                      <LogIn className="w-4 h-4" />
+                      Sign In
+                    </Link>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
-            
-            <div className="flex items-center space-x-4">
-              <Button variant="ghost" asChild className="flex items-center gap-2">
-                <Link to="/login">
-                  <LogIn className="w-4 h-4" />
-                  Sign In
-                </Link>
-              </Button>
-              <Button asChild className="flex items-center gap-2">
-                <Link to="/register">
-                  <UserPlus className="w-4 h-4" />
-                  Get Started
-                </Link>
-              </Button>
             </div>
           </div>
         </div>
