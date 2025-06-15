@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { SidebarLink } from "@/types";
@@ -14,6 +13,7 @@ const sidebarLinks: SidebarLink[] = [
   { label: "Child Panel", icon: "👥", path: "/child-panel", isNew: true },
   { label: "Request Features", icon: "💡", path: "/features" },
   { label: "Flash", icon: "⚡", path: "/flash", isNew: true },
+  { label: "Pricing", icon: "💳", path: "/pricing" },
   { 
     label: "History", 
     icon: "📜", 

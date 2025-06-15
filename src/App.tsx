@@ -22,6 +22,7 @@ import LogoutPage from "./pages/LogoutPage";
 import FlashPage from "./pages/FlashPage";
 import WorldChatPage from "./pages/WorldChatPage";
 import ContactUsPage from "./pages/ContactUsPage";
+import PricingPage from "./pages/PricingPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -58,6 +59,7 @@ const App = () => (
           <Route path="/history/payment" element={<Layout><PaymentHistoryPage /></Layout>} />
           <Route path="/tutorials" element={<Layout><TutorialPage /></Layout>} />
           <Route path="/flash" element={<Layout><FlashPage /></Layout>} />
+          <Route path="/pricing" element={<Layout><PricingPage /></Layout>} />
           <Route path="/logout" element={<Layout><LogoutPage /></Layout>} />
           
           {/* Catch-all route */}
