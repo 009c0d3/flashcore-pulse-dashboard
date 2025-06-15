@@ -3,12 +3,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, Shield, Zap, Users, TrendingUp, Star, CheckCircle, Globe, Smartphone, Lock } from "lucide-react";
+import { ArrowRight, Shield, Zap, Users, TrendingUp, Star, CheckCircle, Globe, Smartphone, Lock, LogIn, UserPlus } from "lucide-react";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/20">
-      {/* Custom Header for Landing Page */}
+      {/* Simplified Header for Landing Page */}
       <header className="border-b border-border/40 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
@@ -20,18 +20,19 @@ const Index = () => {
                 FLASHCORE
               </span>
             </div>
-            <nav className="hidden md:flex items-center space-x-8">
-              <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">Dashboard</Link>
-              <Link to="/pricing" className="text-muted-foreground hover:text-foreground transition-colors">Pricing</Link>
-              <Link to="/tutorials" className="text-muted-foreground hover:text-foreground transition-colors">Tutorials</Link>
-              <Link to="/contact" className="text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
-            </nav>
+            
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" asChild>
-                <Link to="/login">Sign In</Link>
+              <Button variant="ghost" asChild className="flex items-center gap-2">
+                <Link to="/login">
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </Link>
               </Button>
-              <Button asChild>
-                <Link to="/register">Get Started</Link>
+              <Button asChild className="flex items-center gap-2">
+                <Link to="/register">
+                  <UserPlus className="w-4 h-4" />
+                  Get Started
+                </Link>
               </Button>
             </div>
           </div>
