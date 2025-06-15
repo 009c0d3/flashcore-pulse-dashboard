@@ -8,7 +8,7 @@ export const Logo = ({
   <img
     src="/lovable-uploads/c6274856-7224-4530-9f45-df3b9949127d.png"
     alt="FlashCore Logo"
-    className={`rounded-xl bg-white/90 object-contain border-2 border-gray-300 ${className}`}
+    className={`rounded-xl bg-white/90 object-contain border-4 border-gray-300 ${className}`}
     {...props}
   />
 );
