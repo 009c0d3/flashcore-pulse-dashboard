@@ -1,9 +1,9 @@
-
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Clock, AlertTriangle, ArrowRight } from "lucide-react";
+import { Input } from "@/components/ui/input";
 
 const ActivationPage = () => {
   return (
