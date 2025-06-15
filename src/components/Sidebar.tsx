@@ -12,7 +12,7 @@ const sidebarLinks: SidebarLink[] = [
   { label: "My Activation", icon: "🔑", path: "/activation" },
   { label: "Contact us", icon: "📞", path: "/contact" },
   { label: "Child Panel", icon: "👥", path: "/child-panel", isNew: true },
-  { label: "Request Features", icon: "💡", path: "/features" },
+  { label: "Request Features", icon: "💡", path: "/request-features" },
   { label: "Flash", icon: "⚡", path: "/flash", isNew: true },
   { label: "Pricing", icon: "💳", path: "/pricing" },
   { 

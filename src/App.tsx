@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -27,6 +28,7 @@ import FeaturesPage from "./pages/FeaturesPage";
 import ContactPage from "./pages/ContactPage";
 import PricingLandingPage from "./pages/PricingLandingPage";
 import WalletPage from "./pages/WalletPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,40 +47,34 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          {/* Landing page without layout */}
+          {/* Public Routes */}
           <Route path="/" element={<Index />} />
-          
-          {/* Landing pages without layout */}
           <Route path="/plans" element={<PlansPage />} />
           <Route path="/features" element={<FeaturesPage />} />
           <Route path="/contact-landing" element={<ContactPage />} />
           <Route path="/pricing-landing" element={<PricingLandingPage />} />
-          
-          {/* Auth pages without layout */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           
-          {/* Wallet page without layout */}
-          <Route path="/wallet" element={<WalletPage />} />
-          
-          {/* Pages with dashboard layout */}
-          <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
-          <Route path="/refer" element={<Layout><ReferEarnPage /></Layout>} />
-          <Route path="/world-chat" element={<Layout><WorldChatPage /></Layout>} />
-          <Route path="/activation" element={<Layout><ActivationPage /></Layout>} />
-          <Route path="/contact" element={<Layout><ContactUsPage /></Layout>} />
-          <Route path="/child-panel" element={<Layout><ChildPanelPage /></Layout>} />
-          <Route path="/features" element={<Layout><FeatureRequestPage /></Layout>} />
-          <Route path="/history" element={<Layout><HistoryPage /></Layout>} />
-          <Route path="/history/mail" element={<Layout><MailHistoryPage /></Layout>} />
-          <Route path="/history/payment" element={<Layout><PaymentHistoryPage /></Layout>} />
-          <Route path="/tutorials" element={<Layout><TutorialPage /></Layout>} />
-          <Route path="/flash" element={<Layout><FlashPage /></Layout>} />
-          <Route path="/pricing" element={<Layout><PricingPage /></Layout>} />
-          <Route path="/logout" element={<Layout><LogoutPage /></Layout>} />
+          {/* Protected Routes */}
+          <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+          <Route path="/refer" element={<ProtectedRoute><Layout><ReferEarnPage /></Layout></ProtectedRoute>} />
+          <Route path="/world-chat" element={<ProtectedRoute><Layout><WorldChatPage /></Layout></ProtectedRoute>} />
+          <Route path="/activation" element={<ProtectedRoute><Layout><ActivationPage /></Layout></ProtectedRoute>} />
+          <Route path="/contact" element={<ProtectedRoute><Layout><ContactUsPage /></Layout></ProtectedRoute>} />
+          <Route path="/child-panel" element={<ProtectedRoute><Layout><ChildPanelPage /></Layout></ProtectedRoute>} />
+          <Route path="/request-features" element={<ProtectedRoute><Layout><FeatureRequestPage /></Layout></ProtectedRoute>} />
+          <Route path="/history" element={<ProtectedRoute><Layout><HistoryPage /></Layout></ProtectedRoute>} />
+          <Route path="/history/mail" element={<ProtectedRoute><Layout><MailHistoryPage /></Layout></ProtectedRoute>} />
+          <Route path="/history/payment" element={<ProtectedRoute><Layout><PaymentHistoryPage /></Layout></ProtectedRoute>} />
+          <Route path="/tutorials" element={<ProtectedRoute><Layout><TutorialPage /></Layout></ProtectedRoute>} />
+          <Route path="/flash" element={<ProtectedRoute><Layout><FlashPage /></Layout></ProtectedRoute>} />
+          <Route path="/pricing" element={<ProtectedRoute><Layout><PricingPage /></Layout></ProtectedRoute>} />
+          <Route path="/logout" element={<ProtectedRoute><Layout><LogoutPage /></Layout></ProtectedRoute>} />
           
           {/* Catch-all route */}
-          <Route path="*" element={<Layout><NotFound /></Layout>} />
+          <Route path="*" element={<ProtectedRoute><Layout><NotFound /></Layout></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
