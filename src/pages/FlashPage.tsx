@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import DashboardModule from "@/components/DashboardModule";
 import { Link } from "react-router-dom";
 import { GenerateTransactionModal } from "@/components/flash/GenerateTransactionModal";
+import { FlashBillingModal } from "@/components/flash/FlashBillingModal";
 
 const flashFeatures = [
   {
@@ -28,6 +29,7 @@ const flashFeatures = [
 
 const FlashPage = () => {
   const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
+  const [isBillingModalOpen, setBillingModalOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex">
@@ -63,6 +65,14 @@ const FlashPage = () => {
                        {button}
                        <Zap className="ml-2 h-4 w-4" />
                      </Button>
+                  ) : title === 'Flash Billing' ? (
+                     <Button 
+                       onClick={() => setBillingModalOpen(true)}
+                       className="w-full bg-gradient-to-r from-flashcore-purple to-flashcore-green hover:opacity-90 transition-opacity font-medium"
+                     >
+                       {button}
+                       <Zap className="ml-2 h-4 w-4" />
+                     </Button>
                   ) : (
                     <Button 
                       asChild
@@ -91,6 +101,7 @@ const FlashPage = () => {
         </main>
       </div>
       <GenerateTransactionModal isOpen={isTransactionModalOpen} onOpenChange={setTransactionModalOpen} />
+      <FlashBillingModal isOpen={isBillingModalOpen} onOpenChange={setBillingModalOpen} />
     </div>
   );
 };
