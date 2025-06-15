@@ -2,13 +2,13 @@
 import React from "react";
 
 export const Logo = ({
-  className = "w-16 h-16 shadow-lg drop-shadow-lg",
+  className = "w-16 h-16",
   ...props
 }: React.ComponentProps<"img">) => (
   <img
-    src="/lovable-uploads/c6274856-7224-4530-9f45-df3b9949127d.png"
+    src="/lovable-uploads/b33b1b5a-9cbe-4f15-9057-216ab7e11c91.png"
     alt="FlashCore Logo"
-    className={`rounded-xl bg-white/90 object-contain border-4 border-gray-300 ${className}`}
+    className={`object-contain ${className}`}
     {...props}
   />
 );
