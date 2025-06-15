@@ -1,4 +1,5 @@
 
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -10,12 +11,13 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
+      "rounded-lg border border-border/20 shadow-lg",
       "relative before:absolute before:inset-0 before:rounded-lg before:p-[1px]",
-      "before:bg-gradient-to-br before:from-flashcore-purple/30 before:via-flashcore-green/20 before:to-flashcore-orange/30",
-      "before:shadow-[0_0_20px_rgba(161,107,247,0.3),0_0_40px_rgba(76,217,123,0.2),0_0_60px_rgba(255,159,64,0.3)]",
-      "after:absolute after:inset-[1px] after:rounded-lg after:bg-gradient-to-br after:from-card/95 after:to-card/90",
+      "before:bg-gradient-to-br before:from-flashcore-purple/50 before:via-flashcore-green/30 before:to-flashcore-orange/50",
+      "before:shadow-[0_0_25px_rgba(161,107,247,0.4),0_0_50px_rgba(76,217,123,0.3),0_0_75px_rgba(255,159,64,0.4)]",
+      "after:absolute after:inset-[1px] after:rounded-lg after:bg-gradient-to-br after:from-gray-900/95 after:via-gray-800/90 after:to-gray-900/95",
       "after:backdrop-blur-sm",
+      "text-white",
       className
     )}
     {...props}
@@ -42,7 +44,7 @@ const CardTitle = React.forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "text-2xl font-semibold leading-none tracking-tight text-white",
       className
     )}
     {...props}
@@ -56,7 +58,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-gray-300", className)}
     {...props}
   />
 ))
@@ -83,3 +85,4 @@ const CardFooter = React.forwardRef<
 CardFooter.displayName = "CardFooter"
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+
