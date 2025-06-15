@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { SidebarLink } from "@/types";
@@ -89,27 +90,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                     <div className="space-y-1">
                       <button
                         className={cn(
-                          "flex items-center w-full px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors",
+                          "flex items-center w-full px-3 py-2 text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground rounded-md transition-colors text-left",
                           isActivePath(link.path) && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                         )}
                         onClick={() => toggleExpand(link.label)}
                       >
-                        <span className="mr-2">{link.icon}</span>
-                        <span className="flex-1">{link.label}</span>
-                        {expandedItems.includes(link.label) ? (
-                          <ChevronDown size={16} />
-                        ) : (
-                          <ChevronRight size={16} />
-                        )}
+                        <span className="mr-3 text-base flex-shrink-0">{link.icon}</span>
+                        <span className="flex-1 text-sm">{link.label}</span>
+                        <span className="ml-2 flex-shrink-0">
+                          {expandedItems.includes(link.label) ? (
+                            <ChevronDown size={16} />
+                          ) : (
+                            <ChevronRight size={16} />
+                          )}
+                        </span>
                         {link.isNew && (
-                          <span className="ml-2 text-xs font-medium px-1.5 py-0.5 rounded-full bg-flashcore-purple text-white">
+                          <span className="ml-2 text-xs font-medium px-1.5 py-0.5 rounded-full bg-flashcore-purple text-white flex-shrink-0">
                             New
                           </span>
                         )}
                       </button>
                       
                       {expandedItems.includes(link.label) && (
-                        <ul className="pl-5 space-y-1">
+                        <ul className="ml-6 space-y-1 border-l border-sidebar-border pl-3">
                           {link.subLinks.map((subLink) => (
                             <li key={subLink.label}>
                               <Link
@@ -119,8 +122,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                                   isActivePath(subLink.path) && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                                 )}
                               >
-                                <span className="mr-2">{subLink.icon}</span>
-                                <span>{subLink.label}</span>
+                                <span className="mr-3 text-sm flex-shrink-0">{subLink.icon}</span>
+                                <span className="text-sm">{subLink.label}</span>
                               </Link>
                             </li>
                           ))}
@@ -135,10 +138,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
                         isActivePath(link.path) && "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
                       )}
                     >
-                      <span className="mr-2">{link.icon}</span>
-                      <span>{link.label}</span>
+                      <span className="mr-3 text-base flex-shrink-0">{link.icon}</span>
+                      <span className="text-sm">{link.label}</span>
                       {link.isNew && (
-                        <span className="ml-2 text-xs font-medium px-1.5 py-0.5 rounded-full bg-flashcore-purple text-white">
+                        <span className="ml-2 text-xs font-medium px-1.5 py-0.5 rounded-full bg-flashcore-purple text-white flex-shrink-0">
                           New
                         </span>
                       )}
