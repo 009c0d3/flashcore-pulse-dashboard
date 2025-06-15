@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -6,12 +5,14 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Upload } from "lucide-react";
 
 const creditCardSchema = z.object({
   cardNumber: z.string().min(16, "Card number must be at least 16 digits").max(19, "Card number too long"),
   expiryDate: z.string().regex(/^(0[1-9]|1[0-2])\/([0-9]{2})$/, "Use MM/YY format"),
   cvv: z.string().min(3, "CVV must be at least 3 digits").max(4, "CVV too long"),
   cardholderName: z.string().min(2, "Cardholder name is required"),
+  paymentProof: z.any().optional(),
 });
 
 interface CreditCardFormProps {
@@ -136,9 +137,45 @@ const CreditCardForm: React.FC<CreditCardFormProps> = ({ onSubmit, isLoading }) 
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="paymentProof"
+          render={({ field: { onChange, value, ...field } }) => (
+            <FormItem>
+              <FormLabel>Upload Payment Proof</FormLabel>
+              <FormControl>
+                <div className="flex items-center gap-2">
+                  <Input
+                    {...field}
+                    type="file"
+                    accept="image/*,.pdf"
+                    onChange={(e) => onChange(e.target.files?.[0])}
+                    className="file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-medium file:bg-secondary file:text-secondary-foreground hover:file:bg-secondary/80"
+                  />
+                  <Upload size={16} className="text-muted-foreground" />
+                </div>
+              </FormControl>
+              <p className="text-xs text-muted-foreground">
+                Upload screenshot or receipt of your payment (JPG, PNG, PDF)
+              </p>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <div className="bg-secondary/20 p-3 rounded-lg">
+          <h4 className="font-semibold text-sm mb-2">Payment Instructions:</h4>
+          <p className="text-xs text-muted-foreground">
+            1. Complete your card payment through the secure payment gateway<br/>
+            2. Save the payment confirmation or receipt<br/>
+            3. Upload proof of payment above<br/>
+            4. Payment will be processed immediately upon verification
+          </p>
+        </div>
         
         <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Processing..." : "Pay Now"}
+          {isLoading ? "Submitting Receipt..." : "Send Payment Receipt/Proof"}
         </Button>
       </form>
     </Form>
