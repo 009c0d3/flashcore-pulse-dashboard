@@ -1,10 +1,10 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { ArrowRight, Shield, Zap, Users, TrendingUp, Star, CheckCircle, Globe, Smartphone, Lock, LogIn, UserPlus, Menu } from "lucide-react";
+import Logo from "@/components/Logo";
 
 const Index = () => {
   return (
@@ -15,7 +15,7 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                <img src="/lovable-uploads/c6274856-7224-4530-9f45-df3b9949127d.png" alt="FlashCore Logo" className="w-8 h-8" />
+                <Logo />
               </div>
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
                 FLASHCORE
@@ -246,7 +246,7 @@ const Index = () => {
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                  <img src="/lovable-uploads/c6274856-7224-4530-9f45-df3b9949127d.png" alt="FlashCore Logo" className="w-8 h-8" />
+                  <Logo />
                 </div>
                 <span className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
                   FLASHCORE

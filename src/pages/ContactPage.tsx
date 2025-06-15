@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Send, ArrowLeft } from "lucide-react";
@@ -6,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import Logo from "@/components/Logo";
 
 const ContactPage = () => {
   const handleSubmit = (e: React.FormEvent) => {
@@ -21,7 +21,7 @@ const ContactPage = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                <img src="/lovable-uploads/c6274856-7224-4530-9f45-df3b9949127d.png" alt="FlashCore Logo" className="w-8 h-8" />
+                <Logo />
               </div>
               <Link to="/" className="text-xl font-bold bg-gradient-to-r from-flashcore-purple via-flashcore-green to-flashcore-orange bg-clip-text text-transparent">
                 FLASHCORE
