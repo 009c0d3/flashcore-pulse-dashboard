@@ -1,107 +1,95 @@
+
 import React, { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Check, CreditCard, Smartphone, Building, Bitcoin } from "lucide-react";
-import CreditCardForm from "@/components/payment/CreditCardForm";
-import PayPalForm from "@/components/payment/PayPalForm";
-import BankTransferForm from "@/components/payment/BankTransferForm";
-import CryptoForm from "@/components/payment/CryptoForm";
+import { Check, CreditCard } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 
 const PricingPage = () => {
-  const [selectedPlan, setSelectedPlan] = useState("3months");
-  const [paymentMethod, setPaymentMethod] = useState("card");
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [loading, setLoading] = useState<string | null>(null);
+  const { toast } = useToast();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const plans = [
     {
-      id: "1month",
-      name: "Monthly Plan",
-      duration: "1 Month",
-      price: "$29.99",
-      originalPrice: "$39.99",
-      savings: "Save $10",
-      popular: false,
+      id: "basic",
+      name: "Basic Plan",
+      price: "$9.99",
+      interval: "per month",
+      description: "Perfect for getting started",
       features: [
-        "Unlimited mail sending",
+        "Up to 5 services",
         "Basic analytics",
         "Email support",
-        "Basic templates",
-        "Standard delivery speed"
+        "Mobile access"
       ]
     },
     {
-      id: "3months",
-      name: "Quarterly Plan",
-      duration: "3 Months",
-      price: "$24.99",
-      originalPrice: "$29.99",
-      savings: "Save $15/month",
+      id: "pro",
+      name: "Pro Plan",
+      price: "$29.99",
+      interval: "per month",
+      description: "Most popular choice",
       popular: true,
       features: [
-        "Everything in Monthly",
+        "Unlimited services",
         "Advanced analytics",
         "Priority support",
-        "Premium templates",
-        "Faster delivery",
-        "Custom domains"
+        "API access",
+        "Custom integrations"
       ]
     },
     {
-      id: "1year",
-      name: "Annual Plan",
-      duration: "12 Months",
-      price: "$19.99",
-      originalPrice: "$29.99",
-      savings: "Save $120/year",
-      popular: false,
+      id: "enterprise",
+      name: "Enterprise Plan",
+      price: "$99.99",
+      interval: "per month",
+      description: "For large organizations",
       features: [
-        "Everything in Quarterly",
-        "White-label options",
-        "API access",
-        "Advanced integrations",
+        "Everything in Pro",
         "Dedicated support",
+        "SLA guarantee",
         "Custom branding",
-        "Bulk operations"
+        "On-premise option"
       ]
     }
   ];
 
-  const paymentMethods = [
-    { id: "card", name: "Credit/Debit Card", icon: CreditCard, description: "Visa, Mastercard, American Express" },
-    { id: "paypal", name: "PayPal", icon: Smartphone, description: "Pay with your PayPal account" },
-    { id: "bank", name: "Bank Transfer", icon: Building, description: "Direct bank transfer" },
-    { id: "crypto", name: "Cryptocurrency", icon: Bitcoin, description: "Bitcoin, Ethereum, and other cryptocurrencies" }
-  ];
+  const handleSubscribe = async (planId: string) => {
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to subscribe to a plan",
+        variant: "destructive"
+      });
+      navigate('/login');
+      return;
+    }
 
-  const handlePaymentSubmit = async (paymentData: any) => {
-    setIsProcessing(true);
-    const plan = plans.find(p => p.id === selectedPlan);
-    
-    console.log(`Processing payment for ${plan?.name} with ${paymentMethod}:`, paymentData);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    // Here you would integrate with your payment processor
-    alert(`Payment processed successfully for ${plan?.name}!`);
-    setIsProcessing(false);
-  };
+    setLoading(planId);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { plan: planId }
+      });
 
-  const renderPaymentForm = () => {
-    switch (paymentMethod) {
-      case "card":
-        return <CreditCardForm onSubmit={handlePaymentSubmit} isLoading={isProcessing} />;
-      case "paypal":
-        return <PayPalForm onSubmit={handlePaymentSubmit} isLoading={isProcessing} />;
-      case "bank":
-        return <BankTransferForm onSubmit={handlePaymentSubmit} isLoading={isProcessing} />;
-      case "crypto":
-        return <CryptoForm onSubmit={handlePaymentSubmit} isLoading={isProcessing} />;
-      default:
-        return null;
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to create checkout session",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -110,121 +98,67 @@ const PricingPage = () => {
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-4">Choose Your Plan</h1>
         <p className="text-xl text-muted-foreground mb-6">
-          Select the perfect plan for your email marketing needs
+          Select the perfect plan for your needs
         </p>
       </div>
 
-      {/* Pricing Plans */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
         {plans.map((plan) => (
           <Card 
             key={plan.id} 
-            className={`relative cursor-pointer transition-all hover:shadow-lg ${
-              selectedPlan === plan.id ? 'ring-2 ring-flashcore-purple' : ''
-            } ${plan.popular ? 'border-flashcore-purple' : ''}`}
-            onClick={() => setSelectedPlan(plan.id)}
+            className={`relative transition-all hover:shadow-lg ${
+              plan.popular ? 'border-primary ring-2 ring-primary/20' : ''
+            }`}
           >
             {plan.popular && (
               <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                <Badge className="bg-flashcore-purple text-white">Most Popular</Badge>
+                <Badge className="bg-primary text-primary-foreground">Most Popular</Badge>
               </div>
             )}
             
             <CardHeader className="text-center">
               <CardTitle className="text-2xl">{plan.name}</CardTitle>
-              <CardDescription>{plan.duration}</CardDescription>
+              <CardDescription>{plan.description}</CardDescription>
               <div className="mt-4">
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-3xl font-bold">{plan.price}</span>
-                  <span className="text-sm text-muted-foreground">per month</span>
-                </div>
-                <div className="flex items-center justify-center gap-2 mt-1">
-                  <span className="text-sm line-through text-muted-foreground">{plan.originalPrice}</span>
-                  <Badge variant="secondary" className="text-xs">{plan.savings}</Badge>
-                </div>
+                <div className="text-4xl font-bold">{plan.price}</div>
+                <div className="text-sm text-muted-foreground">{plan.interval}</div>
               </div>
             </CardHeader>
             
-            <CardContent>
+            <CardContent className="space-y-4">
               <ul className="space-y-3">
                 {plan.features.map((feature, index) => (
                   <li key={index} className="flex items-center gap-2">
-                    <Check size={16} className="text-flashcore-green" />
+                    <Check size={16} className="text-primary" />
                     <span className="text-sm">{feature}</span>
                   </li>
                 ))}
               </ul>
               
-              <div className="mt-6">
-                <RadioGroup value={selectedPlan} onValueChange={setSelectedPlan}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value={plan.id} id={plan.id} />
-                    <Label htmlFor={plan.id}>Select this plan</Label>
-                  </div>
-                </RadioGroup>
-              </div>
+              <Button
+                onClick={() => handleSubscribe(plan.id)}
+                disabled={loading === plan.id}
+                className="w-full"
+                variant={plan.popular ? "default" : "outline"}
+              >
+                {loading === plan.id ? (
+                  "Processing..."
+                ) : (
+                  <>
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Subscribe Now
+                  </>
+                )}
+              </Button>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      {/* Payment Methods and Forms */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
-        {/* Payment Method Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Payment Method</CardTitle>
-            <CardDescription>Choose how you'd like to pay for your subscription</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="space-y-4">
-              {paymentMethods.map((method) => (
-                <div key={method.id} className="flex items-center space-x-3 p-4 border rounded-lg hover:bg-secondary/50 cursor-pointer">
-                  <RadioGroupItem value={method.id} id={method.id} />
-                  <method.icon size={24} className="text-muted-foreground" />
-                  <div className="flex-1">
-                    <Label htmlFor={method.id} className="font-medium cursor-pointer">
-                      {method.name}
-                    </Label>
-                    <p className="text-sm text-muted-foreground">{method.description}</p>
-                  </div>
-                </div>
-              ))}
-            </RadioGroup>
-
-            {/* Summary */}
-            <div className="mt-6 p-4 bg-secondary/20 rounded-lg">
-              <h3 className="font-semibold mb-2">Order Summary</h3>
-              <div className="flex justify-between items-center">
-                <span>Selected Plan:</span>
-                <span className="font-medium">
-                  {plans.find(p => p.id === selectedPlan)?.name} - {plans.find(p => p.id === selectedPlan)?.price}/month
-                </span>
-              </div>
-              <div className="flex justify-between items-center mt-1">
-                <span>Payment Method:</span>
-                <span className="font-medium">
-                  {paymentMethods.find(m => m.id === paymentMethod)?.name}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Payment Form */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Payment Details</CardTitle>
-            <CardDescription>Complete your payment information</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {renderPaymentForm()}
-            
-            <p className="text-xs text-muted-foreground text-center mt-4">
-              You can cancel your subscription at any time. No setup fees or hidden charges.
-            </p>
-          </CardContent>
-        </Card>
+      <div className="text-center mt-8">
+        <p className="text-sm text-muted-foreground">
+          All plans include a 30-day money-back guarantee. Cancel anytime.
+        </p>
       </div>
     </div>
   );

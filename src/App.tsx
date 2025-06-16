@@ -59,6 +59,7 @@ const App = () => (
           {/* Protected Routes */}
           <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
           <Route path="/dashboard" element={<ProtectedRoute><Layout><Dashboard /></Layout></ProtectedRoute>} />
+          <Route path="/admin" element={<ProtectedRoute><Layout><AdminDashboard /></Layout></ProtectedRoute>} />
           <Route path="/refer" element={<ProtectedRoute><Layout><ReferEarnPage /></Layout></ProtectedRoute>} />
           <Route path="/world-chat" element={<ProtectedRoute><Layout><WorldChatPage /></Layout></ProtectedRoute>} />
           <Route path="/activation" element={<ProtectedRoute><Layout><ActivationPage /></Layout></ProtectedRoute>} />
