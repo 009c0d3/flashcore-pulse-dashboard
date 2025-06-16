@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -118,13 +117,14 @@ const AdminDashboard = () => {
   };
 
   const getStatusBadge = (status: string) => {
-    const variants = {
+    const variants: { [key: string]: "default" | "destructive" | "outline" | "secondary" } = {
       active: "default",
       pending: "secondary",
       expired: "destructive",
       suspended: "outline"
     };
-    return <Badge variant={variants[status as keyof typeof variants] || "outline"}>{status}</Badge>;
+    const variant = variants[status] || "outline";
+    return <Badge variant={variant}>{status}</Badge>;
   };
 
   if (loading) {
