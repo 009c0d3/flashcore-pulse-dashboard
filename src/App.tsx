@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -29,6 +28,7 @@ import FeaturesPage from "./pages/FeaturesPage";
 import ContactPage from "./pages/ContactPage";
 import PricingLandingPage from "./pages/PricingLandingPage";
 import WalletPage from "./pages/WalletPage";
+import CreateAdminPage from "./pages/CreateAdminPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient({
@@ -56,6 +56,7 @@ const App = () => (
           <Route path="/pricing-landing" element={<PricingLandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/create-admin" element={<CreateAdminPage />} />
           
           {/* Protected Routes */}
           <Route path="/wallet" element={<ProtectedRoute><WalletPage /></ProtectedRoute>} />
