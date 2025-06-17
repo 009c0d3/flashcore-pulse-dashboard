@@ -58,8 +58,10 @@ const EmailComposer: React.FC<EmailComposerProps> = ({ isOpen, onClose }) => {
         }
       });
 
-      // Update user progress
-      await supabase.rpc('increment_mails_sent', { user_id: user.id });
+      // Update user progress via edge function
+      await supabase.functions.invoke('increment-mails', {
+        body: { user_id: user.id }
+      });
 
       setStatus('success');
       toast({
