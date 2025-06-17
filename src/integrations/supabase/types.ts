@@ -39,6 +39,36 @@ export type Database = {
         }
         Relationships: []
       }
+      dashboard_logs: {
+        Row: {
+          action: string
+          created_at: string
+          details: Json | null
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          action: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          action?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       license_keys: {
         Row: {
           activated_at: string | null
@@ -72,6 +102,36 @@ export type Database = {
           subscription_tier?: Database["public"]["Enums"]["subscription_tier"]
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      mail_activity: {
+        Row: {
+          created_at: string
+          details: Json | null
+          email_type: string
+          id: string
+          recipient_email: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          email_type: string
+          id?: string
+          recipient_email: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          email_type?: string
+          id?: string
+          recipient_email?: string
+          status?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -171,6 +231,42 @@ export type Database = {
             | null
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      user_progress: {
+        Row: {
+          current_rank: string
+          id: string
+          mails_sent: number
+          progress_percentage: number
+          referral_count: number
+          referral_earnings: number
+          total_earnings: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          current_rank?: string
+          id?: string
+          mails_sent?: number
+          progress_percentage?: number
+          referral_count?: number
+          referral_earnings?: number
+          total_earnings?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          current_rank?: string
+          id?: string
+          mails_sent?: number
+          progress_percentage?: number
+          referral_count?: number
+          referral_earnings?: number
+          total_earnings?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
