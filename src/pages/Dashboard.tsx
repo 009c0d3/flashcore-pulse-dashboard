@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRealDashboardData } from "@/hooks/useRealDashboardData";
 import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
 import { useDashboardLogger } from "@/hooks/useDashboardLogger";
+import { useAuth } from "@/hooks/useAuth";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import PlanModule from "@/components/dashboard/PlanModule";
 import WalletModule from "@/components/dashboard/WalletModule";
@@ -17,6 +18,7 @@ import ReferralPopup from "@/components/ReferralPopup";
 import TelegramPopup from "@/components/TelegramPopup";
 
 const Dashboard: React.FC = () => {
+  const { user, loading: authLoading } = useAuth();
   const { data, isLoading, error } = useRealDashboardData();
   const { isActivated, loading: subscriptionLoading } = useSubscriptionStatus();
   const { logActivity } = useDashboardLogger();
@@ -28,8 +30,10 @@ const Dashboard: React.FC = () => {
 
   // Log dashboard access
   useEffect(() => {
-    logActivity('dashboard_accessed');
-  }, []);
+    if (user) {
+      logActivity('dashboard_accessed');
+    }
+  }, [user, logActivity]);
 
   // Check localStorage for popup history (only for activated users)
   useEffect(() => {
@@ -66,9 +70,10 @@ const Dashboard: React.FC = () => {
     }
   };
 
-  if (isLoading || subscriptionLoading) {
+  // Show loading while auth is loading or while data is being fetched
+  if (authLoading || isLoading || subscriptionLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="flex flex-col items-center">
           <div className="w-16 h-16 border-4 border-flashcore-purple border-t-transparent rounded-full animate-spin"></div>
           <p className="mt-4 text-xl font-semibold">Loading dashboard...</p>
@@ -77,12 +82,16 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  // Handle error state
   if (error) {
+    console.error('Dashboard error:', error);
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="p-6 bg-card rounded-xl border border-destructive max-w-md mx-auto text-center">
           <h2 className="text-2xl font-bold text-destructive mb-2">Error Loading Dashboard</h2>
-          <p className="text-muted-foreground mb-4">Please try refreshing the page</p>
+          <p className="text-muted-foreground mb-4">
+            {error.message || 'Please try refreshing the page'}
+          </p>
           <button 
             onClick={() => window.location.reload()}
             className="px-4 py-2 bg-destructive text-destructive-foreground rounded-md"
@@ -94,8 +103,20 @@ const Dashboard: React.FC = () => {
     );
   }
 
+  // If no data but no error, show empty state
+  if (!data) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="p-6 bg-card rounded-xl border max-w-md mx-auto text-center">
+          <h2 className="text-2xl font-bold mb-2">Setting up your dashboard...</h2>
+          <p className="text-muted-foreground">Please wait while we initialize your account.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-background min-h-screen">
       <DashboardHeader />
 
       {!isActivated && (
@@ -109,19 +130,19 @@ const Dashboard: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <LicenseProtectedWrapper feature="Plan Management">
-          <PlanModule plan={data?.plan} isActivated={isActivated} />
+          <PlanModule plan={data.plan} isActivated={isActivated} />
         </LicenseProtectedWrapper>
         
         <LicenseProtectedWrapper feature="Wallet">
-          <WalletModule walletBalance={data?.walletBalance} isActivated={isActivated} />
+          <WalletModule walletBalance={data.walletBalance} isActivated={isActivated} />
         </LicenseProtectedWrapper>
         
         <LicenseProtectedWrapper feature="Status Tracking">
           <StatusModule 
-            user={data?.user} 
-            progress={data?.progress} 
-            mailsNeeded={data?.mailsNeeded} 
-            nextLevel={data?.nextLevel}
+            user={data.user} 
+            progress={data.progress} 
+            mailsNeeded={data.mailsNeeded} 
+            nextLevel={data.nextLevel}
             isActivated={isActivated}
           />
         </LicenseProtectedWrapper>
@@ -130,17 +151,17 @@ const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <LicenseProtectedWrapper feature="Mail Activity Analytics">
           <MailActivityModule 
-            mailActivity={data?.mailActivity || []} 
-            totalMails={data?.totalMails || 0}
-            userRank={data?.user?.rank || ''}
-            progress={data?.progress || 0}
+            mailActivity={data.mailActivity || []} 
+            totalMails={data.totalMails || 0}
+            userRank={data.user?.rank || ''}
+            progress={data.progress || 0}
             isActivated={isActivated}
           />
         </LicenseProtectedWrapper>
         
         <LicenseProtectedWrapper feature="Referral System">
           <ReferralModule 
-            user={data?.user} 
+            user={data.user} 
             onInviteFriends={() => isActivated && setShowReferralPopup(true)}
             isActivated={isActivated}
           />
