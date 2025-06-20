@@ -69,42 +69,6 @@ export type Database = {
         }
         Relationships: []
       }
-      email_templates: {
-        Row: {
-          content: string
-          created_at: string
-          created_by: string | null
-          id: string
-          is_active: boolean
-          name: string
-          subject: string
-          template_type: string
-          updated_at: string
-        }
-        Insert: {
-          content: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          is_active?: boolean
-          name: string
-          subject: string
-          template_type: string
-          updated_at?: string
-        }
-        Update: {
-          content?: string
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          is_active?: boolean
-          name?: string
-          subject?: string
-          template_type?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       license_keys: {
         Row: {
           activated_at: string | null
@@ -228,48 +192,6 @@ export type Database = {
         }
         Relationships: []
       }
-      smtp_settings: {
-        Row: {
-          created_at: string
-          from_email: string
-          from_name: string | null
-          host: string | null
-          id: string
-          is_active: boolean
-          password: string | null
-          port: number | null
-          provider: string
-          updated_at: string
-          username: string | null
-        }
-        Insert: {
-          created_at?: string
-          from_email: string
-          from_name?: string | null
-          host?: string | null
-          id?: string
-          is_active?: boolean
-          password?: string | null
-          port?: number | null
-          provider: string
-          updated_at?: string
-          username?: string | null
-        }
-        Update: {
-          created_at?: string
-          from_email?: string
-          from_name?: string | null
-          host?: string | null
-          id?: string
-          is_active?: boolean
-          password?: string | null
-          port?: number | null
-          provider?: string
-          updated_at?: string
-          username?: string | null
-        }
-        Relationships: []
-      }
       subscribers: {
         Row: {
           created_at: string
@@ -309,45 +231,6 @@ export type Database = {
             | null
           updated_at?: string
           user_id?: string | null
-        }
-        Relationships: []
-      }
-      user_profiles: {
-        Row: {
-          avatar_url: string | null
-          bio: string | null
-          created_at: string
-          first_name: string | null
-          id: string
-          last_name: string | null
-          phone: string | null
-          updated_at: string
-          user_id: string
-          username: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string
-          first_name?: string | null
-          id?: string
-          last_name?: string | null
-          phone?: string | null
-          updated_at?: string
-          user_id: string
-          username?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string
-          first_name?: string | null
-          id?: string
-          last_name?: string | null
-          phone?: string | null
-          updated_at?: string
-          user_id?: string
-          username?: string | null
         }
         Relationships: []
       }
@@ -399,10 +282,6 @@ export type Database = {
       generate_license_key: {
         Args: Record<PropertyKey, never>
         Returns: string
-      }
-      is_admin: {
-        Args: { user_id?: string }
-        Returns: boolean
       }
     }
     Enums: {

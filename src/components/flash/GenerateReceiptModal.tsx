@@ -11,12 +11,12 @@ import { ReceiptForm } from "./ReceiptForm";
 
 interface GenerateReceiptModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onOpenChange: (isOpen: boolean) => void;
 }
 
-const GenerateReceiptModal: React.FC<GenerateReceiptModalProps> = ({ isOpen, onClose }) => {
+export const GenerateReceiptModal: React.FC<GenerateReceiptModalProps> = ({ isOpen, onOpenChange }) => {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] bg-card border-border text-foreground">
         <DialogHeader>
           <DialogTitle>Generate Receipt</DialogTitle>
@@ -31,5 +31,3 @@ const GenerateReceiptModal: React.FC<GenerateReceiptModalProps> = ({ isOpen, onC
     </Dialog>
   );
 };
-
-export default GenerateReceiptModal;

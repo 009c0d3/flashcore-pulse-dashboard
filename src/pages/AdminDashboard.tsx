@@ -2,13 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminStatsCards from "@/components/admin/AdminStatsCards";
 import LicenseManagement from "@/components/admin/LicenseManagement";
 import SubscribersTable from "@/components/admin/SubscribersTable";
-import UserManagement from "@/components/admin/UserManagement";
-import SmtpSettings from "@/components/admin/SmtpSettings";
 
 const AdminDashboard = () => {
   const [licenses, setLicenses] = useState([]);
@@ -58,48 +55,15 @@ const AdminDashboard = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-16 h-16 border-4 border-flashcore-purple border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
       <AdminHeader />
       <AdminStatsCards licenses={licenses} subscribers={subscribers} orders={orders} />
-      
-      <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="licenses">Licenses</TabsTrigger>
-          <TabsTrigger value="subscribers">Subscribers</TabsTrigger>
-          <TabsTrigger value="settings">Settings</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="overview" className="space-y-6">
-          <LicenseManagement licenses={licenses} onRefresh={fetchData} />
-          <SubscribersTable subscribers={subscribers} />
-        </TabsContent>
-        
-        <TabsContent value="users">
-          <UserManagement />
-        </TabsContent>
-        
-        <TabsContent value="licenses">
-          <LicenseManagement licenses={licenses} onRefresh={fetchData} />
-        </TabsContent>
-        
-        <TabsContent value="subscribers">
-          <SubscribersTable subscribers={subscribers} />
-        </TabsContent>
-        
-        <TabsContent value="settings">
-          <SmtpSettings />
-        </TabsContent>
-      </Tabs>
+      <LicenseManagement licenses={licenses} onRefresh={fetchData} />
+      <SubscribersTable subscribers={subscribers} />
     </div>
   );
 };

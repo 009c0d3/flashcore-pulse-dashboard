@@ -1,229 +1,263 @@
 
 import React, { useState } from "react";
-import { useSubscriptionStatus } from "@/hooks/useSubscriptionStatus";
-import { useAuth } from "@/hooks/useAuth";
+import { Zap, Clock, TrendingUp, BarChart3, Mail, Receipt, CreditCard, Users, Target, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
-import { CreditCard, Receipt, FileText, Send } from "lucide-react";
-import FlashBillingModal from "@/components/flash/FlashBillingModal";
-import GenerateReceiptModal from "@/components/flash/GenerateReceiptModal";
-import GenerateTransactionModal from "@/components/flash/GenerateTransactionModal";
+import DashboardModule from "@/components/DashboardModule";
+import { GenerateTransactionModal } from "@/components/flash/GenerateTransactionModal";
+import { FlashBillingModal } from "@/components/flash/FlashBillingModal";
+import { GenerateReceiptModal } from "@/components/flash/GenerateReceiptModal";
+
+const flashFeatures = [
+  {
+    title: "Generate Transaction",
+    desc: "Instantly send wallet transaction emails to your users with all the details, in a flash.",
+    button: "Generate",
+    icon: "⚡",
+    color: "from-blue-500 to-cyan-500"
+  },
+  {
+    title: "Flash Billing",
+    desc: "Send billing emails instantly and manage all your invoices from one place.",
+    button: "Flash Bill",
+    icon: "💰",
+    color: "from-green-500 to-emerald-500"
+  },
+  {
+    title: "Generate Receipts",
+    desc: "Quickly create transaction receipts for any wallet transaction.",
+    button: "Create Receipt",
+    icon: "🧾",
+    color: "from-purple-500 to-pink-500"
+  },
+  {
+    title: "Bulk Operations",
+    desc: "Process multiple transactions and send bulk emails to hundreds of users simultaneously.",
+    button: "Start Bulk",
+    icon: "📦",
+    color: "from-orange-500 to-red-500"
+  },
+  {
+    title: "Analytics Dashboard",
+    desc: "Real-time insights into your email campaigns, delivery rates, and user engagement.",
+    button: "View Analytics",
+    icon: "📊",
+    color: "from-indigo-500 to-blue-500"
+  },
+  {
+    title: "Template Manager",
+    desc: "Create, customize, and manage email templates for all your communication needs.",
+    button: "Manage Templates",
+    icon: "📝",
+    color: "from-teal-500 to-green-500"
+  },
+];
+
+const quickStats = [
+  { label: "Emails Sent Today", value: "1,247", icon: Mail, change: "+12%" },
+  { label: "Success Rate", value: "98.5%", icon: Target, change: "+2.1%" },
+  { label: "Active Templates", value: "24", icon: Receipt, change: "+3" },
+  { label: "Processing Time", value: "0.8s", icon: Clock, change: "-15%" },
+];
 
 const FlashPage = () => {
-  const { isActivated } = useSubscriptionStatus();
-  const { user } = useAuth();
-  const { toast } = useToast();
-  
-  const [showBillingModal, setShowBillingModal] = useState(false);
-  const [showReceiptModal, setShowReceiptModal] = useState(false);
-  const [showTransactionModal, setShowTransactionModal] = useState(false);
-  
-  const [customEmailData, setCustomEmailData] = useState({
-    to: '',
-    subject: '',
-    message: '',
-    template: 'custom'
-  });
-
-  if (!isActivated) {
-    return (
-      <div className="container mx-auto p-6">
-        <div className="p-6 bg-destructive/10 border border-destructive rounded-lg text-center">
-          <h2 className="text-2xl font-bold text-destructive mb-2">License Activation Required</h2>
-          <p className="text-muted-foreground mb-4">
-            You need an active license to access Flash features.
-          </p>
-          <Button asChild>
-            <a href="/activation">Activate License</a>
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const handleSendCustomEmail = async () => {
-    if (!customEmailData.to || !customEmailData.subject || !customEmailData.message) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const { data, error } = await supabase.functions.invoke('send-flash-email', {
-        body: {
-          type: 'custom',
-          to: customEmailData.to,
-          subject: customEmailData.subject,
-          message: customEmailData.message,
-          from: user?.email
-        }
-      });
-
-      if (error) throw error;
-
-      toast({
-        title: "Success",
-        description: "Email sent successfully!",
-      });
-
-      setCustomEmailData({ to: '', subject: '', message: '', template: 'custom' });
-    } catch (error) {
-      console.error('Email sending failed:', error);
-      toast({
-        title: "Error",
-        description: "Failed to send email",
-        variant: "destructive"
-      });
-    }
-  };
+  const [isTransactionModalOpen, setTransactionModalOpen] = useState(false);
+  const [isBillingModalOpen, setBillingModalOpen] = useState(false);
+  const [isReceiptModalOpen, setReceiptModalOpen] = useState(false);
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-flashcore-purple to-flashcore-green bg-clip-text text-transparent">
-          FlashCore Pro
+    <div className="space-y-6">
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold gradient-text mb-2">
+          ⚡ Flash Tools
         </h1>
-        <p className="text-xl text-muted-foreground">
-          Professional email automation and business tools
+        <p className="text-muted-foreground">
+          Quick access to your most powerful automation tools. Process transactions, send emails, and manage receipts in seconds.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Billing Email Card */}
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowBillingModal(true)}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-flashcore-purple" />
-              Generate Billing Email
-            </CardTitle>
-            <CardDescription>
-              Create professional billing and invoice emails
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full bg-gradient-to-r from-flashcore-purple to-flashcore-green">
-              Create Billing Email
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Receipt Generator Card */}
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowReceiptModal(true)}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Receipt className="w-5 h-5 text-flashcore-green" />
-              Generate Receipt
-            </CardTitle>
-            <CardDescription>
-              Create and send professional receipts
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full bg-gradient-to-r from-flashcore-green to-flashcore-purple">
-              Create Receipt
-            </Button>
-          </CardContent>
-        </Card>
-
-        {/* Transaction Generator Card */}
-        <Card className="hover:shadow-lg transition-shadow cursor-pointer" onClick={() => setShowTransactionModal(true)}>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-blue-500" />
-              Generate Transaction
-            </CardTitle>
-            <CardDescription>
-              Create transaction confirmations and statements
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button className="w-full bg-gradient-to-r from-blue-500 to-purple-500">
-              Create Transaction
-            </Button>
-          </CardContent>
-        </Card>
+      {/* Quick Stats */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        {quickStats.map(({ label, value, icon: Icon, change }) => (
+          <Card key={label} className="border-l-4 border-l-flashcore-purple">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">{label}</p>
+                  <p className="text-2xl font-bold">{value}</p>
+                  <p className="text-xs text-flashcore-green">{change}</p>
+                </div>
+                <Icon className="h-8 w-8 text-flashcore-purple" />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Custom Email Form */}
-      <Card>
+      {/* Performance Overview */}
+      <Card className="mb-8">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Send className="w-5 h-5" />
-            Send Custom Email
+            <TrendingUp className="h-5 w-5" />
+            Performance Overview
           </CardTitle>
           <CardDescription>
-            Compose and send custom emails with professional templates
+            Your flash tools performance metrics for the last 7 days
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="to">To</Label>
-              <Input
-                id="to"
-                type="email"
-                placeholder="recipient@example.com"
-                value={customEmailData.to}
-                onChange={(e) => setCustomEmailData({ ...customEmailData, to: e.target.value })}
-              />
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="text-3xl font-bold text-flashcore-green mb-2">15,847</div>
+              <p className="text-sm text-muted-foreground">Total Transactions Processed</p>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="template">Template</Label>
-              <Select value={customEmailData.template} onValueChange={(value) => setCustomEmailData({ ...customEmailData, template: value })}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="custom">Custom</SelectItem>
-                  <SelectItem value="business">Business</SelectItem>
-                  <SelectItem value="marketing">Marketing</SelectItem>
-                  <SelectItem value="notification">Notification</SelectItem>
-                </SelectContent>
-              </Select>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-flashcore-purple mb-2">2.3s</div>
+              <p className="text-sm text-muted-foreground">Average Processing Time</p>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-flashcore-blue mb-2">99.2%</div>
+              <p className="text-sm text-muted-foreground">System Uptime</p>
             </div>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="subject">Subject</Label>
-            <Input
-              id="subject"
-              placeholder="Email subject"
-              value={customEmailData.subject}
-              onChange={(e) => setCustomEmailData({ ...customEmailData, subject: e.target.value })}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
-            <Textarea
-              id="message"
-              placeholder="Type your message here..."
-              rows={6}
-              value={customEmailData.message}
-              onChange={(e) => setCustomEmailData({ ...customEmailData, message: e.target.value })}
-            />
-          </div>
-
-          <Button onClick={handleSendCustomEmail} className="w-full">
-            <Send className="w-4 h-4 mr-2" />
-            Send Email
-          </Button>
         </CardContent>
       </Card>
 
-      {/* Modals */}
-      <FlashBillingModal isOpen={showBillingModal} onClose={() => setShowBillingModal(false)} />
-      <GenerateReceiptModal isOpen={showReceiptModal} onClose={() => setShowReceiptModal(false)} />
-      <GenerateTransactionModal isOpen={showTransactionModal} onClose={() => setShowTransactionModal(false)} />
+      {/* Main Flash Tools */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+        {flashFeatures.map(({ title, desc, button, icon, color }) => (
+          <DashboardModule 
+            key={title}
+            title={title} 
+            icon={icon}
+            className="lg:col-span-1"
+          >
+            <div className="flex flex-col h-full">
+              <p className="text-sm text-muted-foreground mb-4 leading-relaxed flex-grow">
+                {desc}
+              </p>
+              
+              {title === 'Generate Transaction' ? (
+                 <Button 
+                   onClick={() => setTransactionModalOpen(true)}
+                   className={`w-full bg-gradient-to-r ${color} hover:opacity-90 transition-opacity font-medium`}
+                 >
+                   {button}
+                   <Zap className="ml-2 h-4 w-4" />
+                 </Button>
+              ) : title === 'Flash Billing' ? (
+                 <Button 
+                   onClick={() => setBillingModalOpen(true)}
+                   className={`w-full bg-gradient-to-r ${color} hover:opacity-90 transition-opacity font-medium`}
+                 >
+                   {button}
+                   <Zap className="ml-2 h-4 w-4" />
+                 </Button>
+              ) : title === 'Generate Receipts' ? (
+                <Button 
+                  onClick={() => setReceiptModalOpen(true)}
+                  className={`w-full bg-gradient-to-r ${color} hover:opacity-90 transition-opacity font-medium`}
+                >
+                  {button}
+                  <Zap className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <Button 
+                  className={`w-full bg-gradient-to-r ${color} hover:opacity-90 transition-opacity font-medium`}
+                  variant="outline"
+                >
+                  {button}
+                  <Zap className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </DashboardModule>
+        ))}
+      </div>
+
+      {/* Security & Compliance */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Security & Compliance
+          </CardTitle>
+          <CardDescription>
+            Your data is protected with enterprise-grade security
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="flex items-center gap-3 p-3 bg-secondary rounded-lg">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-sm">SSL Encryption</span>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-secondary rounded-lg">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-sm">GDPR Compliant</span>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-secondary rounded-lg">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-sm">SOC 2 Certified</span>
+            </div>
+            <div className="flex items-center gap-3 p-3 bg-secondary rounded-lg">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-sm">99.9% Uptime</span>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Recent Activity */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5" />
+            Recent Flash Activity
+          </CardTitle>
+          <CardDescription>
+            Your latest flash tool usage and results
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-3">
+            {[
+              { action: "Transaction Email Sent", details: "Batch of 150 emails", time: "2 minutes ago", status: "success" },
+              { action: "Receipt Generated", details: "Invoice #INV-2024-001", time: "5 minutes ago", status: "success" },
+              { action: "Billing Campaign", details: "Monthly subscription reminders", time: "1 hour ago", status: "success" },
+              { action: "Bulk Operation", details: "500 transaction notifications", time: "3 hours ago", status: "success" },
+            ].map((activity, index) => (
+              <div key={index} className="flex items-center justify-between p-3 bg-secondary rounded-lg">
+                <div className="flex-1">
+                  <p className="font-medium">{activity.action}</p>
+                  <p className="text-sm text-muted-foreground">{activity.details}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-sm text-muted-foreground">{activity.time}</p>
+                  <div className="flex items-center gap-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <span className="text-xs text-green-500 capitalize">{activity.status}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+      
+      <div className="mt-12 text-center">
+        <p className="text-sm text-muted-foreground">
+          Need help getting started? Check out our{" "}
+          <span className="text-flashcore-green hover:underline cursor-pointer">
+            tutorial section
+          </span>{" "}
+          for step-by-step guides and best practices.
+        </p>
+      </div>
+
+      <GenerateTransactionModal isOpen={isTransactionModalOpen} onOpenChange={setTransactionModalOpen} />
+      <FlashBillingModal isOpen={isBillingModalOpen} onOpenChange={setBillingModalOpen} />
+      <GenerateReceiptModal isOpen={isReceiptModalOpen} onOpenChange={setReceiptModalOpen} />
     </div>
   );
 };

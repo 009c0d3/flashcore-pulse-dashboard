@@ -11,12 +11,12 @@ import { BillingForm } from "./BillingForm";
 
 interface FlashBillingModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onOpenChange: (isOpen: boolean) => void;
 }
 
-const FlashBillingModal: React.FC<FlashBillingModalProps> = ({ isOpen, onClose }) => {
+export const FlashBillingModal: React.FC<FlashBillingModalProps> = ({ isOpen, onOpenChange }) => {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px] bg-card border-border text-foreground">
         <DialogHeader>
           <DialogTitle>Generate Billing Email</DialogTitle>
@@ -31,5 +31,3 @@ const FlashBillingModal: React.FC<FlashBillingModalProps> = ({ isOpen, onClose }
     </Dialog>
   );
 };
-
-export default FlashBillingModal;
